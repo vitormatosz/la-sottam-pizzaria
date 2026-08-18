@@ -1,4 +1,5 @@
 package model;
 
-class TipoSaida extends Pedido{
+public enum TipoSaida {
+    DELIVERY, RETIRADA
 }
