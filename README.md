@@ -1,4 +1,4 @@
-# La Sott'Impizzaria — Sistema de Gestão de Pedidos
+# La Sottam' Pizzaria — Sistema de Gestão de Pedidos
 
 **Desenvolvimento de Sistemas (DS)** — **2° DSA**
 
