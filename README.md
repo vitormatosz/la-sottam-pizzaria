@@ -1,4 +1,4 @@
-# La Sottam' Pizzaria — Sistema de Gestão de Pedidos
+# La Sottam Pizzaria — Sistema de Gestão de Pedidos
 
 **Desenvolvimento de Sistemas (DS)** — **2° DSA**
 
@@ -9,7 +9,7 @@
 - Pedro Henrique
 
 ## Sobre o Projeto
-Sistema de gestão de pedidos desenvolvido para nossa pizzaria **La Sottam' Pizzaria**, com o objetivo de substituir o controle manual (caderno/planilhas) por uma aplicação que centraliza o cadastro de clientes, o catálogo de produtos, o controle de estoque de ingredientes e o registro de pedidos (entrega ou retirada no balcão).
+Sistema de gestão de pedidos desenvolvido para nossa pizzaria **La Sottam Pizzaria**, com o objetivo de substituir o controle manual (caderno/planilhas) por uma aplicação que centraliza o cadastro de clientes, o catálogo de produtos, o controle de estoque de ingredientes e o registro de pedidos (entrega ou retirada no balcão).
 
 ## Escopo
 **Contempla:**
