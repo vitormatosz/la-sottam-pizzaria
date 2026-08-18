@@ -1,5 +1,5 @@
 package model;
 
 public enum TipoSaida {
-    DELIVERY, RETIRADA
+    ENTREGA, RETIRADA
 }
