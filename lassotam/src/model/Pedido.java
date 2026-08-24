@@ -14,7 +14,7 @@ public class Pedido {
     private TipoSaida tiposaida;
     private List<ItemPedido> itens;
 
-    public Pedido (Cliente cliente, String formaPag, String observacao, Date dataPedido, TipoSaida tiposaida, List<ItemPedido> itens){
+    public Pedido (Cliente cliente, String formaPag, String observacao, Date dataPedido, TipoSaida tiposaida){
         this.cliente = cliente;
         this.formaPag = formaPag;
         this.frete = 9.00;
@@ -25,53 +25,40 @@ public class Pedido {
     }
 
     public int getId() { 
-        return id; 
-    }
+        return id; }
 
     public Cliente getCliente() { 
-        return cliente; 
-    }
+        return cliente; }
     public void setCliente(Cliente cliente) { 
-        this.cliente = cliente; 
-    }
+        this.cliente = cliente; }
 
     public String getFormaPag() { 
-        return formaPag; 
-    }
+        return formaPag; }
     public void setFormaPag(String formaPag) {
-        this.formaPag = formaPag; 
-    }
+        this.formaPag = formaPag; }
 
     public double getFrete() { 
-        return frete; 
-    }
+        return frete; }
 
     public Date getDataPedido() { 
-        return dataPedido; 
-    }
+        return dataPedido; }
     public void setDataPedido(Date dataPedido) { 
-        this.dataPedido = dataPedido; 
-    }
+        this.dataPedido = dataPedido; }
 
     public TipoSaida getTipoDeSaida() { 
-        return tiposaida; 
-    }
+        return tiposaida; }
     public void setTipoDeSaida(TipoSaida tipoDeSaida) { 
-        this.tiposaida = tipoDeSaida; 
-    }
+        this.tiposaida = tipoDeSaida; }
 
     public List<ItemPedido> getItens() { 
-        return itens; 
-    }
+        return itens; }
     public void setItens(List<ItemPedido> itens) { 
-        this.itens = itens; 
-    }
+        this.itens = itens; }
 
     public void adicionarItem(ItemPedido item) {
-        itens.add(item);
-    }
+        itens.add(item);}
 
     public void removerItem(ItemPedido item) {
-        itens.remove(item);
-    }
+        itens.remove(item);}
 }
+
