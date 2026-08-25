@@ -91,6 +91,14 @@ A estrutura foi planejada para armazenar as principais informações necessária
 
 ## Entidades
 
+### Funcionario
+```text
+funcionario
+├── id (PK)
+├── usuario
+└── senha
+```
+
 ### Cliente
 ```text
 cliente
