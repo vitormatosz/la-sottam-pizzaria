@@ -92,20 +92,16 @@ A estrutura foi planejada para armazenar as principais informações necessária
 ## Entidades
 
 ### Cliente
-
 ```text
-funcionario
-├── id (PK)
-├── nome_usuario
-└── senha
-
 cliente
 ├── id (PK)
 ├── nome
 ├── numero_tel
 └── endereco
+```
 
-Produto
+### Produto
+```text
 produto
 ├── id (PK)
 ├── nome
@@ -114,8 +110,10 @@ produto
 ├── tamanho
 ├── preco
 └── disponivel
+```
 
-Ingrediente
+### Ingrediente
+```text
 ingrediente
 ├── id (PK)
 ├── nome
@@ -123,8 +121,10 @@ ingrediente
 ├── unidade
 ├── quantidade
 └── estoque_minimo
+```
 
-Pedido
+### Pedido
+```text
 pedido
 ├── id (PK)
 ├── cliente_id (FK → cliente.id)
@@ -132,28 +132,27 @@ pedido
 ├── frete
 ├── data_pedido
 └── tipo_saida
+```
+> **Nota:** O campo `tipo_saida` possui os seguintes valores: **ENTREGA** ou **RETIRADA**.
 
-
-O campo tipo_saida possui os seguintes valores:
-
-ENTREGA
-RETIRADA
-
-Item do Pedido
+### Item do Pedido
+```text
 item_pedido
 ├── id (PK)
 ├── pedido_id (FK → pedido.id)
 ├── produto_id (FK → produto.id)
 ├── quantidade
 └── preco_unitario
+```
+> **Nota:** A relação entre `pedido` e `item_pedido` utiliza `ON DELETE CASCADE`, fazendo com que os itens sejam removidos automaticamente quando o pedido correspondente for excluído.
 
+---
 
-A relação entre pedido e item_pedido utiliza ON DELETE CASCADE, fazendo com que os itens sejam removidos automaticamente quando o pedido correspondente for excluído.
-
-🔗 Relacionamentos
+## 🔗 Relacionamentos
 
 O banco de dados possui os seguintes relacionamentos principais:
 
+```text
 CLIENTE
    │
    │ 1
@@ -173,58 +172,61 @@ ITEM_PEDIDO
    │ 1
    ▼
 PRODUTO
+```
 
-Relacionamentos
-Um Cliente pode possuir vários Pedidos
-Cada Pedido pertence a um Cliente
-Um Pedido possui um ou mais Itens
-Cada ItemPedido pertence a um Pedido
-Um Produto pode aparecer em vários ItensPedido
-Cada ItemPedido referencia um único Produto
-📐 Diagrama de Classes UML
+**Regras de Relacionamento:**
+- Um **Cliente** pode possuir vários **Pedidos** (Cada Pedido pertence a um Cliente).
+- Um **Pedido** possui um ou mais **Itens** (Cada ItemPedido pertence a um Pedido).
+- Um **Produto** pode aparecer em vários **ItensPedido** (Cada ItemPedido referencia um único Produto).
+
+---
+
+## 📐 Diagrama de Classes UML
 
 O sistema segue uma estrutura orientada a objetos composta principalmente pelas seguintes classes:
 
-Cliente
-Produto
-Ingrediente
-Pedido
-ItemPedido
-TipoSaida
-
-O enum TipoSaida representa as opções:
-
-ENTREGA
-RETIRADA
-
+- `Cliente`
+- `Produto`
+- `Ingrediente`
+- `Pedido`
+- `ItemPedido`
+- `TipoSaida` *(O enum TipoSaida representa as opções: ENTREGA, RETIRADA)*
 
 As classes possuem atributos privados e métodos responsáveis pelo acesso e manipulação dos dados.
 
-Principais conceitos utilizados
-Encapsulamento
-Classes e objetos
-Construtores
-Getters e setters
-Associações
-Composição
-Enumerações
-Regras de negócio
-Exemplos de métodos
-calcularTotal()
-precisaReposicao()
-validarDadosCadastro()
+### Principais conceitos utilizados
+- Encapsulamento
+- Classes e objetos
+- Construtores
+- Getters e setters
+- Associações
+- Composição
+- Enumerações
+- Regras de negócio
 
-💻 Tecnologias Utilizadas
-☕ Java
-🖥️ Java Swing
-🔌 JDBC
-🗄️ MySQL
-📐 UML
-💻 Visual Studio Code
-📁 Estrutura do Projeto
+### Exemplos de métodos
+- `calcularTotal()`
+- `precisaReposicao()`
+- `validarDadosCadastro()`
+
+---
+
+## 💻 Tecnologias Utilizadas
+
+- ☕ **Java**
+- 🖥️ **Java Swing**
+- 🔌 **JDBC**
+- 🗄️ **MySQL**
+- 📐 **UML**
+- 💻 **Visual Studio Code**
+
+---
+
+## 📁 Estrutura do Projeto
 
 A estrutura do projeto Java foi planejada da seguinte maneira:
 
+```text
 la-sottam-pizzaria/
 │
 ├── src/
@@ -247,191 +249,164 @@ la-sottam-pizzaria/
 │   └── documentacao/
 │
 └── README.md
+```
 
-Diretórios
-Diretório	Função
-src	Código-fonte Java
-model	Classes de modelo
-dao	Acesso e operações no banco
-view	Interfaces gráficas
-connection	Conexão com o MySQL
-lib	Dependências do projeto
-bin	Arquivos compilados
-sql	Scripts do banco de dados
-docs	Documentação e diagramas
-👨‍💻 Divisão das Responsabilidades
-👤 Pedro Henrique — Banco de Dados + SQL
+### Diretórios
 
+| Diretório | Função |
+| :--- | :--- |
+| `src` | Código-fonte Java |
+| `model` | Classes de modelo |
+| `dao` | Acesso e operações no banco |
+| `view` | Interfaces gráficas |
+| `connection` | Conexão com o MySQL |
+| `lib` | Dependências do projeto |
+| `bin` | Arquivos compilados |
+| `sql` | Scripts do banco de dados |
+| `docs` | Documentação e diagramas |
+
+---
+
+## 👨‍💻 Divisão das Responsabilidades
+
+### 👤 Pedro Henrique — Banco de Dados + SQL
 Responsável pela implementação do banco de dados.
+**Atividades:**
+- Levantar as entidades necessárias
+- Criar o modelo do banco e definir tabelas
+- Definir PKs e FKs e criar o script SQL (DDL)
+- Criar relacionamentos e definir restrições
+- Testar o banco no MySQL e entregar o script SQL para integração com Java
 
-Atividades
-Levantar as entidades necessárias
-Criar o modelo do banco
-Definir tabelas
-Definir PKs e FKs
-Criar o script SQL (DDL)
-Criar relacionamentos
-Definir restrições
-Testar o banco no MySQL
-Entregar o script SQL para integração com Java
-👤 Yago Costa — UML + Documentação
-
+### 👤 Yago Costa — UML + Documentação
 Responsável pela documentação e pelo Diagrama de Classes UML.
+**Atividades:**
+- Definir as classes do sistema, atributos e construtores
+- Definir métodos e regras de negócio
+- Criar associações, multiplicidades, composição e outras relações
+- Criar o Diagrama de Classes UML
+- Elaborar a documentação do projeto
 
-Atividades
-Definir as classes do sistema
-Definir atributos
-Criar construtores
-Definir métodos
-Definir regras de negócio
-Criar associações e multiplicidades
-Definir composição e outras relações
-Criar o Diagrama de Classes UML
-Elaborar a documentação do projeto
-👤 Samira Toledo — Java + JDBC
-
+### 👤 Samira Toledo — Java + JDBC
 Responsável pela estrutura do projeto Java e pela comunicação com o banco de dados.
+**Atividades:**
+- Criar a estrutura do projeto Java e organizar pacotes
+- Criar a conexão com o MySQL e configurar JDBC
+- Criar as classes de modelo e os DAOs
+- Implementar operações: INSERT, SELECT, UPDATE, DELETE
+- Testar a comunicação entre Java e MySQL
 
-Atividades
-Criar a estrutura do projeto Java
-Organizar os pacotes
-Criar a conexão com o MySQL
-Configurar JDBC
-Criar as classes de modelo
-Criar os DAOs
-Implementar operações:
-INSERT
-SELECT
-UPDATE
-DELETE
-Testar a comunicação entre Java e MySQL
-👤 Vitor Matos — Java Swing + CRUD
-
+### 👤 Vitor Matos — Java Swing + CRUD
 Responsável pela interface gráfica e pelo CRUD funcional.
 
-CRUD principal
+**CRUD principal (1ª Etapa: Clientes)**
+- ➕ Cadastrar cliente
+- 🔎 Consultar clientes
+- ✏️ Alterar cliente
+- 🗑️ Excluir cliente
 
-Para a primeira etapa do projeto, foi definido o CRUD de Clientes.
+**Componentes Swing:** `JFrame`, `JPanel`, `JTextField`, `JTable`, `JButton` e componentes de validação.
+> A interface será integrada aos métodos DAO desenvolvidos na camada Java/JDBC.
 
-Funcionalidades
-➕ Cadastrar cliente
-🔎 Consultar clientes
-✏️ Alterar cliente
-🗑️ Excluir cliente
-Componentes Swing
-JFrame
-JPanel
-JTextField
-JTable
-JButton
-Componentes de validação
+---
 
-A interface será integrada aos métodos DAO desenvolvidos na camada Java/JDBC.
-
-🔄 Fluxo de Desenvolvimento
+## 🔄 Fluxo de Desenvolvimento
 
 O desenvolvimento pode seguir o seguinte fluxo:
 
-Pedro
-Banco de Dados
+```text
+Pedro (Banco de Dados)
       ↓
-Yago
-UML + Documentação
+Yago (UML + Documentação)
       ↓
-Samira
-Java + JDBC + DAO
+Samira (Java + JDBC + DAO)
       ↓
-Vitor
-Swing + CRUD
+Vitor (Swing + CRUD)
       ↓
-Todos
-Integração + Testes
+Todos (Integração + Testes)
+```
+> Apesar dessa divisão, os integrantes devem trabalhar em conjunto para garantir que o banco, as classes Java e a interface estejam de acordo.
 
+---
 
-Apesar dessa divisão, os integrantes devem trabalhar em conjunto para garantir que o banco, as classes Java e a interface estejam de acordo.
+## 🚀 Primeira Etapa
 
-🚀 Primeira Etapa
+Para a primeira etapa do projeto, o foco será desenvolver um **CRUD completo de Clientes**.
 
-Para a primeira etapa do projeto, o foco será desenvolver um CRUD completo de Clientes.
+O CRUD deverá permitir o fluxo:
+`Cadastrar` ➔ `Consultar` ➔ `Alterar` ➔ `Excluir`
 
-O CRUD deverá permitir:
+A ideia é garantir que essa funcionalidade esteja totalmente funcional antes da implementação dos demais módulos. Posteriormente, o sistema poderá ser expandido para:
 
-Cadastrar
-   ↓
-Consultar
-   ↓
-Alterar
-   ↓
-Excluir
-
-
-A ideia é garantir que essa funcionalidade esteja totalmente funcional antes da implementação dos demais módulos.
-
-Posteriormente, o sistema poderá ser expandido para:
-
+```text
                  LA SOTTAM PIZZARIA
                          │
-          ┌──────────────┼──────────────┐
-          ↓              ↓              ↓
-      Clientes       Produtos       Ingredientes
-          │              │              │
-          └──────────────┼──────────────┘
+         ┌───────────────┼───────────────┐
+         ↓               ↓               ↓
+     Clientes        Produtos       Ingredientes
+         │               │               │
+         └───────────────┼───────────────┘
                          ↓
                       Pedidos
                          │
                          ↓
-                   Itens do Pedido
+                  Itens do Pedido
+```
 
-📚 Documentação
+---
+
+## 📚 Documentação
 
 A documentação do projeto contempla:
+- Solução Proposta
+- Escopo do Sistema
+- Script SQL (DDL)
+- Diagrama de Classes UML
+- Descrição das funcionalidades
+- Estrutura do projeto
 
-Solução Proposta
-Escopo do Sistema
-Script SQL (DDL)
-Diagrama de Classes UML
-Descrição das funcionalidades
-Estrutura do projeto
-🛠️ Como Executar
-Pré-requisitos
+---
 
+## 🛠️ Como Executar
+
+### Pré-requisitos
 Antes de executar o projeto, é necessário ter instalado:
+- Java JDK
+- MySQL
+- Visual Studio Code (com Extensão Java para VS Code)
+- Driver JDBC do MySQL
 
-Java JDK
-MySQL
-Visual Studio Code
-Extensão Java para VS Code
-Driver JDBC do MySQL
-Banco de Dados
-Abra o MySQL.
-Execute o script localizado em:
-sql/banco.sql
+### Banco de Dados
+1. Abra o MySQL.
+2. Execute o script localizado em: `sql/banco.sql`
+3. Verifique se o banco foi criado corretamente.
+4. Configure as credenciais de acesso no projeto Java.
 
-Verifique se o banco foi criado corretamente.
-Configure as credenciais de acesso no projeto Java.
-Executando o projeto
+### Executando o projeto
+1. Abra o projeto no Visual Studio Code.
+2. Execute a classe principal da aplicação.
 
-Abra o projeto no Visual Studio Code e execute a classe principal da aplicação.
+---
 
-📌 Status do Projeto
+## 📌 Status do Projeto
 
-🚧 Em desenvolvimento
+🚧 **Em desenvolvimento**
 
-Etapa atual
- Definição do escopo
- Definição das entidades
- Divisão das responsabilidades
- Modelagem inicial do banco
- Definição das classes UML
- Implementação do banco de dados
- Implementação da conexão JDBC
- Implementação dos DAOs
- Desenvolvimento da interface Swing
- CRUD de Clientes
- Testes de integração
- Documentação final
-🍕 La Sottam Pizzaria
+- [ ] Definição do escopo
+- [ ] Definição das entidades
+- [ ] Divisão das responsabilidades
+- [ ] Modelagem inicial do banco
+- [ ] Definição das classes UML
+- [ ] Implementação do banco de dados
+- [ ] Implementação da conexão JDBC
+- [ ] Implementação dos DAOs
+- [ ] Desenvolvimento da interface Swing
+- [ ] CRUD de Clientes
+- [ ] Testes de integração
+- [ ] Documentação final
 
-Do pedido ao forno, tudo organizado em um só lugar.
+---
 
-Projeto acadêmico desenvolvido pela turma 2° DSA — Desenvolvimento de Sistemas.
+> **🍕 La Sottam Pizzaria**
+> *Do pedido ao forno, tudo organizado em um só lugar.*
+> Projeto acadêmico desenvolvido pela turma 2° DSA — Desenvolvimento de Sistemas.
