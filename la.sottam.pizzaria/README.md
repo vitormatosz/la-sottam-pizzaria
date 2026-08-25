@@ -94,6 +94,11 @@ A estrutura foi planejada para armazenar as principais informações necessária
 ### Cliente
 
 ```text
+funcionario
+├── id (PK)
+├── nome_usuario
+└── senha
+
 cliente
 ├── id (PK)
 ├── nome
