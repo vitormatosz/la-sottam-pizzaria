@@ -11,8 +11,8 @@ O sistema tem como objetivo auxiliar no gerenciamento de uma pizzaria, centraliz
 ## 👥 Participantes
 
 - **Yago Costa** — UML e documentação
-- **Samira Toledo** — Java e JDBC
-- **Vitor Matos** — Java Swing e CRUD
+- **Vitor Matos** — Java e JDBC
+- **Samira Toledo** — Java Swing e CRUD
 - **Pedro Henrique** — Banco de Dados e SQL
 
 ---
