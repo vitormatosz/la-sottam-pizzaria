@@ -295,7 +295,7 @@ Responsável pela documentação e pelo Diagrama de Classes UML.
 - Criar o Diagrama de Classes UML
 - Elaborar a documentação do projeto
 
-### 👤 Samira Toledo — Java + JDBC
+### 👤 Vitor Matos — Java + JDBC
 Responsável pela estrutura do projeto Java e pela comunicação com o banco de dados.
 **Atividades:**
 - Criar a estrutura do projeto Java e organizar pacotes
@@ -304,7 +304,7 @@ Responsável pela estrutura do projeto Java e pela comunicação com o banco de 
 - Implementar operações: INSERT, SELECT, UPDATE, DELETE
 - Testar a comunicação entre Java e MySQL
 
-### 👤 Vitor Matos — Java Swing + CRUD
+### 👤 Samira Toledo — Java Swing + CRUD
 Responsável pela interface gráfica e pelo CRUD funcional.
 
 **CRUD principal (1ª Etapa: Clientes)**
