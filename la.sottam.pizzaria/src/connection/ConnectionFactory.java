@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class ConnectionFactory {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/lasottam?useTimezone=true&serverTimezone=UTC";
+    private static final String URL = "jdbc:mysql://localhost:3306/lasottam";
     private static final String USER = "root";
-    private static final String PASSWORD = "sua_senha";
+    private static final String PASSWORD = "";
 
     public static Connection getConnection() {
         try {

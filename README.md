@@ -17,20 +17,20 @@ O sistema tem como objetivo auxiliar no gerenciamento de uma pizzaria, centraliz
 
 ---
 
-## 📋 Sobre o Projeto
+## 📋 Solução Proposta
 
-O **La Sottam Pizzaria** é um sistema de gestão de pedidos desenvolvido para substituir o controle manual realizado por meio de cadernos e planilhas.
+A pizzaria atualmente controla pedidos, clientes e estoque por meio de cadernos e planilhas manuais, o que gera pedidos duplicados ou perdidos, dificuldade para localizar o histórico de clientes, erros no cálculo do valor total e falta de controle de estoque.
 
-A aplicação busca centralizar e facilitar o gerenciamento de:
+A solução é um **Sistema Desktop de Gerenciamento Comercial**, desenvolvido em **Java** com interface gráfica em **Java Swing** e persistência de dados em banco relacional **MySQL**, acessado via **JDBC**. O sistema centraliza o cadastro de clientes, o catálogo de produtos, o controle de ingredientes em estoque e o registro de pedidos — incluindo tipo de saída (entrega ou retirada no balcão), forma de pagamento, frete e cálculo automático do total.
 
-- Clientes
-- Produtos
-- Ingredientes
-- Estoque
-- Pedidos
-- Itens dos pedidos
+O projeto é organizado em camadas:
 
-O sistema também permite registrar pedidos para **entrega** ou **retirada no balcão**, além de armazenar informações como forma de pagamento, frete e data do pedido.
+- **`model`** — classes de domínio que representam as entidades do negócio e suas regras de negócio.
+- **`connection`** — responsável pela conexão JDBC com o banco MySQL.
+- **`dao`** — classes de acesso a dados, isolando o restante do sistema de detalhes de persistência (SQL).
+- **`view`** — telas Java Swing utilizadas pelos funcionários para interagir com o sistema.
+
+Isso permite que o sistema evolua de forma incremental: a primeira etapa entrega a base do domínio e um CRUD completo de Clientes, e as etapas seguintes constroem os demais módulos sobre essa base.
 
 ---
 
@@ -62,7 +62,7 @@ O projeto tem como principais objetivos:
 - Controle de estoque
 - Definição de estoque mínimo
 - Registro de pedidos
-- Registro dos itens de cada pedido
+- Registro dos itens de cada pedido, com escolha de tamanho (com acréscimo de preço)
 - Escolha da forma de pagamento
 - Definição do tipo de saída:
   - Entrega
@@ -76,10 +76,10 @@ As seguintes funcionalidades não fazem parte da primeira versão do projeto, ma
 - Pagamento online integrado
 - Aplicativo mobile
 - Emissão de nota fiscal
-- Sistema de autenticação de usuários
+- Sistema de autenticação de usuários e controle de funcionários
 - Relatórios de vendas
-- Controle de funcionários
 - Dashboard administrativo
+- Vínculo entre Produto e Ingrediente (baixa automática de estoque na venda)
 
 ---
 
@@ -87,17 +87,7 @@ As seguintes funcionalidades não fazem parte da primeira versão do projeto, ma
 
 O sistema utiliza **MySQL** como banco de dados relacional.
 
-A estrutura foi planejada para armazenar as principais informações necessárias para o funcionamento da pizzaria.
-
 ## Entidades
-
-### Funcionario
-```text
-funcionario
-├── id (PK)
-├── usuario
-└── senha
-```
 
 ### Cliente
 ```text
@@ -115,10 +105,10 @@ produto
 ├── nome
 ├── categoria
 ├── descricao
-├── tamanho
 ├── preco
 └── disponivel
 ```
+> **Nota:** `tamanho` não é atributo do Produto — ele é escolhido no momento do pedido (com acréscimo de preço), por isso fica em `item_pedido`.
 
 ### Ingrediente
 ```text
@@ -149,16 +139,15 @@ item_pedido
 ├── id (PK)
 ├── pedido_id (FK → pedido.id)
 ├── produto_id (FK → produto.id)
+├── tamanho
 ├── quantidade
 └── preco_unitario
 ```
-> **Nota:** A relação entre `pedido` e `item_pedido` utiliza `ON DELETE CASCADE`, fazendo com que os itens sejam removidos automaticamente quando o pedido correspondente for excluído.
+> **Nota:** A relação entre `pedido` e `item_pedido` utiliza `ON DELETE CASCADE`, fazendo com que os itens sejam removidos automaticamente quando o pedido correspondente for excluído. O campo `tamanho` possui os valores **PEQUENA**, **MEDIA** ou **GRANDE**, cada um com um acréscimo de preço definido.
 
 ---
 
 ## 🔗 Relacionamentos
-
-O banco de dados possui os seguintes relacionamentos principais:
 
 ```text
 CLIENTE
@@ -183,39 +172,224 @@ PRODUTO
 ```
 
 **Regras de Relacionamento:**
-- Um **Cliente** pode possuir vários **Pedidos** (Cada Pedido pertence a um Cliente).
-- Um **Pedido** possui um ou mais **Itens** (Cada ItemPedido pertence a um Pedido).
-- Um **Produto** pode aparecer em vários **ItensPedido** (Cada ItemPedido referencia um único Produto).
+- Um **Cliente** pode possuir vários **Pedidos** (cada Pedido pertence a um Cliente).
+- Um **Pedido** possui um ou mais **Itens** (cada ItemPedido pertence a um Pedido — relação de composição).
+- Um **Produto** pode aparecer em vários **ItensPedido** (cada ItemPedido referencia um único Produto).
+
+---
+
+## 🧱 Script SQL (DDL)
+
+```sql
+CREATE DATABASE IF NOT EXISTS la_sottam_pizzaria;
+USE la_sottam_pizzaria;
+
+CREATE TABLE cliente (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(120) NOT NULL,
+    numero_tel VARCHAR(20) NOT NULL,
+    endereco VARCHAR(200)
+);
+
+CREATE TABLE produto (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(120) NOT NULL,
+    categoria VARCHAR(60) NOT NULL,
+    descricao VARCHAR(255),
+    preco DECIMAL(10,2) NOT NULL,
+    disponivel BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE ingrediente (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(120) NOT NULL,
+    categoria VARCHAR(60) NOT NULL,
+    unidade VARCHAR(20) NOT NULL,
+    quantidade DECIMAL(10,2) NOT NULL DEFAULT 0,
+    estoque_minimo DECIMAL(10,2) NOT NULL DEFAULT 0
+);
+
+CREATE TABLE pedido (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    forma_pag VARCHAR(40) NOT NULL,
+    frete DECIMAL(10,2) NOT NULL DEFAULT 0,
+    data_pedido DATETIME NOT NULL,
+    tipo_saida ENUM('ENTREGA', 'RETIRADA') NOT NULL,
+    CONSTRAINT fk_pedido_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(id)
+);
+
+CREATE TABLE item_pedido (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pedido_id INT NOT NULL,
+    produto_id INT NOT NULL,
+    tamanho ENUM('PEQUENA', 'MEDIA', 'GRANDE') NOT NULL,
+    quantidade INT NOT NULL,
+    preco_unitario DECIMAL(10,2) NOT NULL,
+    CONSTRAINT fk_item_pedido FOREIGN KEY (pedido_id) REFERENCES pedido(id) ON DELETE CASCADE,
+    CONSTRAINT fk_item_produto FOREIGN KEY (produto_id) REFERENCES produto(id)
+);
+```
 
 ---
 
 ## 📐 Diagrama de Classes UML
 
-O sistema segue uma estrutura orientada a objetos composta principalmente pelas seguintes classes:
+```mermaid
+classDiagram
+    class Cliente {
+        -int id
+        -String nome
+        -String numeroTel
+        -String endereco
+        +Cliente(nome, numeroTel, endereco)
+        +getId() int
+        +setId(id)
+        +getNome() String
+        +setNome(nome)
+        +getNumeroTel() String
+        +setNumeroTel(numeroTel)
+        +getEndereco() String
+        +setEndereco(endereco)
+        +validarDadosCadastro() boolean
+    }
 
-- `Cliente`
-- `Produto`
-- `Ingrediente`
-- `Pedido`
-- `ItemPedido`
-- `TipoSaida` *(O enum TipoSaida representa as opções: ENTREGA, RETIRADA)*
+    class Produto {
+        -int id
+        -String nome
+        -String categoria
+        -String descricao
+        -double preco
+        -boolean disponivel
+        +Produto(nome, categoria, descricao, preco)
+        +getId() int
+        +setId(id)
+        +getNome() String
+        +setNome(nome)
+        +getCategoria() String
+        +setCategoria(categoria)
+        +getDescricao() String
+        +setDescricao(descricao)
+        +getPreco() double
+        +setPreco(preco)
+        +isDisponivel() boolean
+        +setDisponivel(disponivel)
+        +atualizarDisponibilidade()
+    }
 
-As classes possuem atributos privados e métodos responsáveis pelo acesso e manipulação dos dados.
+    class Ingrediente {
+        -int id
+        -String nome
+        -String categoria
+        -String unidade
+        -double quantidade
+        -double estoqueMinimo
+        +Ingrediente(nome, categoria, unidade, quantidade, estoqueMinimo)
+        +getId() int
+        +setId(id)
+        +getNome() String
+        +setNome(nome)
+        +getCategoria() String
+        +setCategoria(categoria)
+        +getUnidade() String
+        +setUnidade(unidade)
+        +getQuantidade() double
+        +setQuantidade(quantidade)
+        +getEstoqueMinimo() double
+        +setEstoqueMinimo(estoqueMinimo)
+        +precisaReposicao() boolean
+        +darBaixa(qtd)
+    }
+
+    class Pedido {
+        -int id
+        -Cliente cliente
+        -String formaPag
+        -double frete
+        -Date dataPedido
+        -TipoSaida tipoDeSaida
+        -List~ItemPedido~ itens
+        +Pedido(cliente, formaPag, tipoDeSaida)
+        +getId() int
+        +setId(id)
+        +getCliente() Cliente
+        +setCliente(cliente)
+        +getFormaPag() String
+        +setFormaPag(formaPag)
+        +getFrete() double
+        +setFrete(frete)
+        +getDataPedido() Date
+        +setDataPedido(dataPedido)
+        +getTipoDeSaida() TipoSaida
+        +setTipoDeSaida(tipoDeSaida)
+        +getItens() List~ItemPedido~
+        +setItens(itens)
+        +adicionarItem(item)
+        +removerItem(item)
+        +calcularSubtotalItens() double
+        +calcularTotal() double
+    }
+
+    class ItemPedido {
+        -int id
+        -Pedido pedido
+        -Produto produto
+        -Tamanho tamanho
+        -int quantidade
+        -double precoUnitario
+        +ItemPedido(produto, tamanho, quantidade)
+        +getId() int
+        +setId(id)
+        +getPedido() Pedido
+        +setPedido(pedido)
+        +getProduto() Produto
+        +setProduto(produto)
+        +getTamanho() Tamanho
+        +setTamanho(tamanho)
+        +getQuantidade() int
+        +setQuantidade(quantidade)
+        +getPrecoUnitario() double
+        +setPrecoUnitario(precoUnitario)
+        +calcularSubtotal() double
+    }
+
+    class TipoSaida {
+        <<enumeration>>
+        ENTREGA
+        RETIRADA
+    }
+
+    class Tamanho {
+        <<enumeration>>
+        PEQUENA
+        MEDIA
+        GRANDE
+        -double acrescimo
+        +getAcrescimo() double
+    }
+
+    Cliente "1" --> "0..*" Pedido : realiza
+    Pedido "1" *-- "1..*" ItemPedido : compõe
+    ItemPedido "0..*" --> "1" Produto : referencia
+    ItemPedido "0..*" --> "1" Tamanho : possui
+    Pedido "0..*" --> "1" TipoSaida : possui
+```
+
+**Leitura das relações:**
+
+- **Cliente → Pedido (1 : 0..\*)**: um cliente pode realizar vários pedidos; cada pedido pertence a exatamente um cliente.
+- **Pedido ◆→ ItemPedido (composição, 1 : 1..\*)**: um item de pedido não existe sem o pedido ao qual pertence.
+- **ItemPedido → Produto (0..\* : 1)**: um item referencia um produto do catálogo; o mesmo produto pode aparecer em vários itens de pedidos diferentes.
+- **ItemPedido → Tamanho** e **Pedido → TipoSaida**: associações com os enums que representam escolhas fixas.
 
 ### Principais conceitos utilizados
 - Encapsulamento
 - Classes e objetos
 - Construtores
 - Getters e setters
-- Associações
-- Composição
+- Associações e composição
 - Enumerações
 - Regras de negócio
-
-### Exemplos de métodos
-- `calcularTotal()`
-- `precisaReposicao()`
-- `validarDadosCadastro()`
 
 ---
 
@@ -231,8 +405,6 @@ As classes possuem atributos privados e métodos responsáveis pelo acesso e man
 ---
 
 ## 📁 Estrutura do Projeto
-
-A estrutura do projeto Java foi planejada da seguinte maneira:
 
 ```text
 la-sottam-pizzaria/
@@ -320,16 +492,14 @@ Responsável pela interface gráfica e pelo CRUD funcional.
 
 ## 🔄 Fluxo de Desenvolvimento
 
-O desenvolvimento pode seguir o seguinte fluxo:
-
 ```text
 Pedro (Banco de Dados)
       ↓
 Yago (UML + Documentação)
       ↓
-Samira (Java + JDBC + DAO)
+Vitor (Java + JDBC + DAO)
       ↓
-Vitor (Swing + CRUD)
+Samira (Swing + CRUD)
       ↓
 Todos (Integração + Testes)
 ```
@@ -400,11 +570,11 @@ Antes de executar o projeto, é necessário ter instalado:
 
 🚧 **Em desenvolvimento**
 
-- [ ] Definição do escopo
-- [ ] Definição das entidades
-- [ ] Divisão das responsabilidades
-- [ ] Modelagem inicial do banco
-- [ ] Definição das classes UML
+- [x] Definição do escopo
+- [x] Definição das entidades
+- [x] Divisão das responsabilidades
+- [x] Modelagem inicial do banco
+- [x] Definição das classes UML
 - [ ] Implementação do banco de dados
 - [ ] Implementação da conexão JDBC
 - [ ] Implementação dos DAOs

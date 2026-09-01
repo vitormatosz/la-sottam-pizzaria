@@ -21,11 +21,12 @@ public class ClienteDAO {
         }
     }
 
-    public Cliente buscarPorId(int id) {
-        String sql = "SELECT * FROM cliente WHERE id = ?";
+    public Cliente buscarPorIdOuNome(int id, String nome) {
+        String sql = "SELECT * FROM cliente WHERE id = ? OR nome LIKE ?";
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
+            stmt.setString(2, "%" + nome + "%");
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Cliente c = new Cliente(rs.getString("nome"), rs.getString("numero_tel"), rs.getString("endereco"));

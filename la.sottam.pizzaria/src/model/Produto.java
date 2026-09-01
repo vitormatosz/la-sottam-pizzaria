@@ -16,31 +16,21 @@ public class Produto {
         this.disponivel = true;
     }
 
-    public int getId() {
-        return id; }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public String getNome() {
-        return nome; }
-    public void setNome(String nome) {
-        this.nome = nome; }
+    public String getNome() {return nome; }
+    public void setNome(String nome) {this.nome = nome; }
 
-    public String getCategoria() {
-        return categoria; }
-    public void setCategoria(String categoria) {
-        this.categoria = categoria; }
+    public String getCategoria() {return categoria; }
+    public void setCategoria(String categoria) {this.categoria = categoria; }
 
-    public String getDescricao() {
-        return descricao; }
-    public void setDescricao(String descricao) {
-        this.descricao = descricao; }
+    public String getDescricao() {return descricao; }
+    public void setDescricao(String descricao) {this.descricao = descricao; }
 
-    public double getPreco() {
-        return preco; }
-    public void setPreco(double preco) {
-        this.preco = preco; }
+    public double getPreco() {return preco; }
+    public void setPreco(double preco) {this.preco = preco; }
 
-    public boolean isDisponivel() {
-        return disponivel; }
-    public void setDisponivel(boolean disponivel) {
-        this.disponivel = disponivel; }
+    public boolean isDisponivel() {return disponivel; }
+    public void setDisponivel(boolean disponivel) {this.disponivel = disponivel; }
 }
