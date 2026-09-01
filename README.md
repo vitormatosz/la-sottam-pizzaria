@@ -251,7 +251,6 @@ classDiagram
         +setNumeroTel(numeroTel)
         +getEndereco() String
         +setEndereco(endereco)
-        +validarDadosCadastro() boolean
     }
 
     class Produto {
@@ -274,7 +273,6 @@ classDiagram
         +setPreco(preco)
         +isDisponivel() boolean
         +setDisponivel(disponivel)
-        +atualizarDisponibilidade()
     }
 
     class Ingrediente {
@@ -298,7 +296,6 @@ classDiagram
         +getEstoqueMinimo() double
         +setEstoqueMinimo(estoqueMinimo)
         +precisaReposicao() boolean
-        +darBaixa(qtd)
     }
 
     class Pedido {
@@ -326,8 +323,6 @@ classDiagram
         +setItens(itens)
         +adicionarItem(item)
         +removerItem(item)
-        +calcularSubtotalItens() double
-        +calcularTotal() double
     }
 
     class ItemPedido {
@@ -418,15 +413,10 @@ la-sottam-pizzaria/
 ├── lib/
 │   └── dependencias/
 │
-├── bin/
-│   └── arquivos compilados/
-│
 ├── sql/
 │   └── banco.sql
 │
 ├── docs/
-│   ├── diagrama-classes/
-│   └── documentacao/
 │
 └── README.md
 ```
@@ -575,9 +565,9 @@ Antes de executar o projeto, é necessário ter instalado:
 - [x] Divisão das responsabilidades
 - [x] Modelagem inicial do banco
 - [x] Definição das classes UML
-- [ ] Implementação do banco de dados
-- [ ] Implementação da conexão JDBC
-- [ ] Implementação dos DAOs
+- [x] Implementação do banco de dados
+- [x] Implementação da conexão JDBC
+- [x] Implementação dos DAOs
 - [ ] Desenvolvimento da interface Swing
 - [ ] CRUD de Clientes
 - [ ] Testes de integração

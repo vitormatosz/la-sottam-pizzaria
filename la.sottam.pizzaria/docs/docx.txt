@@ -1,4 +1,12 @@
 DISPONIVEL estar em Produto ou Pedido
+implementar a verificação de dados dos clientes
+
+ingredientes
++darBaixa(qtd)
+
+pedido
++calcularSubtotalItens() double
++calcularTotal() double
 
 package dao;
 
