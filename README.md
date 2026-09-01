@@ -439,7 +439,7 @@ la-sottam-pizzaria/
 
 ## 👨‍💻 Divisão das Responsabilidades
 
-### 👤 Pedro Henrique — Banco de Dados + SQL
+### 🙎🏻‍♂️ Pedro Henrique — Banco de Dados + SQL
 Responsável pela implementação do banco de dados.
 **Atividades:**
 - Levantar as entidades necessárias
@@ -448,7 +448,7 @@ Responsável pela implementação do banco de dados.
 - Criar relacionamentos e definir restrições
 - Testar o banco no MySQL e entregar o script SQL para integração com Java
 
-### 👤 Yago Costa — UML + Documentação
+### 🙎🏻‍♂️ Yago Costa — UML + Documentação
 Responsável pela documentação e pelo Diagrama de Classes UML.
 **Atividades:**
 - Definir as classes do sistema, atributos e construtores
@@ -457,7 +457,7 @@ Responsável pela documentação e pelo Diagrama de Classes UML.
 - Criar o Diagrama de Classes UML
 - Elaborar a documentação do projeto
 
-### 👤 Vitor Matos — Java + JDBC
+### 🙎🏽‍♂️ Vitor Matos — Java + JDBC
 Responsável pela estrutura do projeto Java e pela comunicação com o banco de dados.
 **Atividades:**
 - Criar a estrutura do projeto Java e organizar pacotes
@@ -466,7 +466,7 @@ Responsável pela estrutura do projeto Java e pela comunicação com o banco de 
 - Implementar operações: INSERT, SELECT, UPDATE, DELETE
 - Testar a comunicação entre Java e MySQL
 
-### 👤 Samira Toledo — Java Swing + CRUD
+### 🙎🏻‍♀️ Samira Toledo — Java Swing + CRUD
 Responsável pela interface gráfica e pelo CRUD funcional.
 
 **CRUD principal (1ª Etapa: Clientes)**
