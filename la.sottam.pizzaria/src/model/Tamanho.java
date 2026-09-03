@@ -1,4 +1,3 @@
-package model;
 
 public enum Tamanho {
     PEQUENA(5.0),

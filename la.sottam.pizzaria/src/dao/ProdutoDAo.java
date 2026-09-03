@@ -1,10 +1,7 @@
-package dao;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import connection.ConnectionFactory;
-import model.Produto;
 
 public class ProdutoDAo {
     public void inserir(Produto produto) {

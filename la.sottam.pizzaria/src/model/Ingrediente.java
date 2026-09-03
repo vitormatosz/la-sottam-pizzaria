@@ -1,4 +1,4 @@
-package model;
+
 
 public class Ingrediente {
     private int id;
