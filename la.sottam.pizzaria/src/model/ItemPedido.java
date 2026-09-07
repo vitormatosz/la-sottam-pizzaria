@@ -1,7 +1,4 @@
-
-
-import java.util.Date;
-import java.util.List;
+package model;
 
 public class ItemPedido {
     private int id;

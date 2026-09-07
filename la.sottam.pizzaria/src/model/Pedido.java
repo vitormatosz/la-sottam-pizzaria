@@ -1,3 +1,4 @@
+package model;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,41 +24,30 @@ public class Pedido {
         this.itens = new ArrayList<>();
     }
 
-    public int getId() { 
-        return id; }
+    public int getId() { return id; }
 
-    public Cliente getCliente() { 
-        return cliente; }
-    public void setCliente(Cliente cliente) { 
-        this.cliente = cliente; }
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
 
-    public String getFormaPag() { 
-        return formaPag; }
-    public void setFormaPag(String formaPag) {
-        this.formaPag = formaPag; }
+    public String getFormaPag() { return formaPag; }
+    public void setFormaPag(String formaPag) {this.formaPag = formaPag; }
 
-    public double getFrete() { 
-        return frete; }
+    public double getFrete() { return frete; }
 
-    public Date getDataPedido() { 
-        return dataPedido; }
-    public void setDataPedido(Date dataPedido) { 
-        this.dataPedido = dataPedido; }
+    public String getObservacao() { return observacao; }
+    public void setObservacao(String observacao) {this.observacao = observacao; }
 
-    public TipoSaida getTipoDeSaida() { 
-        return tiposaida; }
-    public void setTipoDeSaida(TipoSaida tipoDeSaida) { 
-        this.tiposaida = tipoDeSaida; }
+    public Date getDataPedido() { return dataPedido; }
+    public void setDataPedido(Date dataPedido) { this.dataPedido = dataPedido; }
 
-    public List<ItemPedido> getItens() { 
-        return itens; }
-    public void setItens(List<ItemPedido> itens) { 
-        this.itens = itens; }
+    public TipoSaida getTipoDeSaida() { return tiposaida; }
+    public void setTipoDeSaida(TipoSaida tipoDeSaida) { this.tiposaida = tipoDeSaida; }
 
-    public void adicionarItem(ItemPedido item) {
-        itens.add(item);}
+    public List<ItemPedido> getItens() { return itens; }
+    public void setItens(List<ItemPedido> itens) { this.itens = itens; }
 
-    public void removerItem(ItemPedido item) {
-        itens.remove(item);}
+    public void adicionarItem(ItemPedido item) {itens.add(item);}
+
+    public void removerItem(ItemPedido item) {itens.remove(item);}
 }
 

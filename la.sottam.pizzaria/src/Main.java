@@ -1,5 +1,6 @@
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import view.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,15 +17,15 @@ public class Main {
 
             // frame.add(loginPanel);
             // frame.setVisible(true);
-            LaSottamGUI tela = new LaSottamGUI();
+            Login tela = new Login();
             tela.setVisible(true);
         });
     }
 }
-
+// import dao.ClienteDAO;
 // public class Main {
 //     public static void main(String[] args) {
-//         dao.ClienteDAO dao = new dao.ClienteDAO();
+//         ClienteDAO dao = new ClienteDAO();
 
 //         model.Cliente novo = new model.Cliente("Maria José", "11999998888", "Rua das Pizzas, 123");
 //         dao.inserir(novo);

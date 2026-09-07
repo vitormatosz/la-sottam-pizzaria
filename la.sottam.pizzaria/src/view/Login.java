@@ -1,3 +1,5 @@
+package view;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -13,7 +15,7 @@ import java.net.URL;
  *   javac LaSottamGUI.java
  *   java LaSottamGUI
  */
-public class LaSottamGUI extends JFrame {
+public class Login extends JFrame {
 
     // Paleta de cores baseada no design
     private static final Color BG_LIGHT_BLUE   = new Color(0xC7EAF7);
@@ -23,7 +25,7 @@ public class LaSottamGUI extends JFrame {
     private static final Color GREEN_BTN_HOVER = new Color(0x356B31);
     private static final Color WHITE           = Color.WHITE;
 
-    public LaSottamGUI() {
+    public Login() {
         setTitle("Registro - La Sottam Pizzaria");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -273,6 +275,6 @@ public class LaSottamGUI extends JFrame {
         }
     }
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new LaSottamGUI().setVisible(true));
+        SwingUtilities.invokeLater(() -> new Login().setVisible(true));
     }
 }
