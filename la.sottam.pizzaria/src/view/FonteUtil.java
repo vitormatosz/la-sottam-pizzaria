@@ -10,15 +10,16 @@ public class FonteUtil {
 
     public static Font carregarFonte(String nomeArquivo, float tamanho) {
         try {
-            // Tenta carregar pelo classpath (pasta src)
-            InputStream is = FonteUtil.class.getResourceAsStream("/" + nomeArquivo);
+            // 1. Tenta pelo Classpath (ex: pasta resources/fontes/ ou src/view/fontes/)
+            String caminhoResource = "/view/fontes/" + nomeArquivo;
+            InputStream is = FonteUtil.class.getResourceAsStream(caminhoResource);
             
             if (is != null) {
                 Font fonte = Font.createFont(Font.TRUETYPE_FONT, is);
                 return fonte.deriveFont(tamanho);
             }
 
-            // Fallback: Tenta carregar pelo caminho direto do arquivo
+            // 2. Fallback: Tenta pelo sistema de arquivos local
             File arquivo = new File("src/view/fontes/" + nomeArquivo);
             if (arquivo.exists()) {
                 Font fonte = Font.createFont(Font.TRUETYPE_FONT, arquivo);
@@ -26,10 +27,10 @@ public class FonteUtil {
             }
 
         } catch (FontFormatException | IOException e) {
-            System.err.println("Erro ao carregar fonte: " + e.getMessage());
+            System.err.println("Erro ao carregar fonte (" + nomeArquivo + "): " + e.getMessage());
         }
 
-        // Se falhar, usa a fonte padrao do sistema sem quebrar o programa
+        // Fallback do sistema caso o arquivo não seja localizado
         return new Font("SansSerif", Font.BOLD, (int) tamanho);
     }
 }

@@ -2,10 +2,15 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import javax.swing.BorderFactory;
@@ -30,10 +35,12 @@ public class LoginPanel extends JPanel {
 
         // Carregamento Logo
         URL logoUrl = getClass().getResource("/assets/logo.png");
-        ImageIcon logoIcon = new ImageIcon(logoUrl);
-        Image logoScaled = logoIcon.getImage().getScaledInstance(964, 212, Image.SCALE_SMOOTH);
-        JLabel lblLogo = new JLabel(new ImageIcon(logoScaled));
-        headerPanel.add(lblLogo);
+        if (logoUrl != null) {
+            ImageIcon logoIcon = new ImageIcon(logoUrl);
+            Image logoScaled = logoIcon.getImage().getScaledInstance(964, 212, Image.SCALE_SMOOTH);
+            JLabel lblLogo = new JLabel(new ImageIcon(logoScaled));
+            headerPanel.add(lblLogo);
+        }
 
         add(headerPanel, BorderLayout.NORTH);
 
@@ -41,13 +48,39 @@ public class LoginPanel extends JPanel {
         JPanel centerPanel = new JPanel();
         centerPanel.setOpaque(false);
 
-        btnEntrar = new JButton("ENTRAR >");
+        // Botão customizado com cantos arredondados via Graphics2D
+        btnEntrar = new JButton("ENTRAR >") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // Desenha o fundo arredondado
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+
+                // Desenha o texto centralizado
+                g2.setColor(getForeground());
+                g2.setFont(getFont());
+                FontMetrics fm = g2.getFontMetrics();
+                int x = (getWidth() - fm.stringWidth(getText())) / 2;
+                int y = ((getHeight() - fm.getHeight()) / 2) + fm.getAscent();
+                g2.drawString(getText(), x, y);
+
+                g2.dispose();
+            }
+        };
+
+        btnEntrar.setContentAreaFilled(false);
+        btnEntrar.setFocusPainted(false);
+        btnEntrar.setBorderPainted(false);
+
         btnEntrar.setBackground(Color.decode("#39761F"));
         btnEntrar.setForeground(Color.decode("#7ED956"));
-        Font Poppins = FonteUtil.carregarFonte("Poppins-Light.ttf", 36f);
-        btnEntrar.setFont(Poppins);
+        Font poppins = FonteUtil.carregarFonte("Poppins-Bold.ttf", 36f);
+        btnEntrar.setFont(poppins);
         btnEntrar.setPreferredSize(new Dimension(230, 80));
-        btnEntrar.setFocusPainted(false);
+        btnEntrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         btnEntrar.addActionListener(onEntrarClick);
         centerPanel.add(btnEntrar);
@@ -60,11 +93,12 @@ public class LoginPanel extends JPanel {
 
         // Carregamento Aliens
         URL aliensUrl = getClass().getResource("/assets/aliens.png");
-        ImageIcon aliensIcon = new ImageIcon(aliensUrl);
-        Image aliensScaled = aliensIcon.getImage().getScaledInstance(736, 550, Image.SCALE_SMOOTH);
-
-        JLabel lblAliens = new JLabel(new ImageIcon(aliensScaled));
-        footerPanel.add(lblAliens);
+        if (aliensUrl != null) {
+            ImageIcon aliensIcon = new ImageIcon(aliensUrl);
+            Image aliensScaled = aliensIcon.getImage().getScaledInstance(736, 550, Image.SCALE_SMOOTH);
+            JLabel lblAliens = new JLabel(new ImageIcon(aliensScaled));
+            footerPanel.add(lblAliens);
+        }
         add(footerPanel, BorderLayout.EAST);
     }
 
@@ -78,29 +112,18 @@ public class LoginPanel extends JPanel {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-
             JFrame frame = new JFrame("Login");
             frame.setResizable(false);
-
-            // Fecha a aplicação ao fechar a janela
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            // Tamanho da janela
             frame.setSize(1097, 820);
-
-            // Coloca a janela no centro da tela
             frame.setLocationRelativeTo(null);
 
-            // Cria o LoginPanel
             LoginPanel loginPanel = new LoginPanel(e -> {
                 System.out.println("Botão ENTRAR clicado!");
             });
 
-            // Coloca o LoginPanel dentro do JFrame
             frame.setLayout(new BorderLayout());
             frame.add(loginPanel, BorderLayout.CENTER);
-
-            // Mostra a janela
             frame.setVisible(true);
         });
     }
