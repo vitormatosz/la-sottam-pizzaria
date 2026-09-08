@@ -8,17 +8,20 @@ import java.net.URL;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import dao.FuncionarioDAO;
+import model.Funcionario;
+
 public class Login extends JPanel {
 
     private static final String AUDIOWIDE = "Audiowide-Regular.ttf";
-    private static final String POPPINS   = "Poppins-Regular.ttf";
+    private static final String POPPINS = "Poppins-Regular.ttf";
 
-    private static final Color BG_LIGHT_BLUE   = new Color(0xC7EAF7);
-    private static final Color PURPLE_CARD     = new Color(0x5B2A86);
-    private static final Color GREEN_ACCENT    = new Color(0x6FCF52);
-    private static final Color GREEN_BTN       = new Color(0x3F7D3A);
+    private static final Color BG_LIGHT_BLUE = new Color(0xC7EAF7);
+    private static final Color PURPLE_CARD = new Color(0x5B2A86);
+    private static final Color GREEN_ACCENT = new Color(0x6FCF52);
+    private static final Color GREEN_BTN = new Color(0x3F7D3A);
     private static final Color GREEN_BTN_HOVER = new Color(0x356B31);
-    private static final Color WHITE           = Color.WHITE;
+    private static final Color WHITE = Color.WHITE;
 
     private Runnable onVoltarAction;
 
@@ -84,11 +87,11 @@ public class Login extends JPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
+
                 // Desenha o fundo circular
                 g2.setColor(GREEN_ACCENT);
                 g2.fillOval(0, 0, getWidth(), getHeight());
-                
+
                 // Desenha o texto centralizado
                 g2.setColor(WHITE);
                 g2.setFont(getFont());
@@ -96,7 +99,7 @@ public class Login extends JPanel {
                 int x = (getWidth() - fm.stringWidth(getText())) / 2;
                 int y = ((getHeight() - fm.getHeight()) / 2) + fm.getAscent();
                 g2.drawString(getText(), x, y);
-                
+
                 g2.dispose();
             }
         };
@@ -154,9 +157,23 @@ public class Login extends JPanel {
 
         RoundedButton entrarBtn = new RoundedButton("ENTRAR");
         entrarBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        entrarBtn.addActionListener(e ->
-                JOptionPane.showMessageDialog(this, "Login: " + idField.getText()));
+        entrarBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, "Login: " + idField.getText()));
         card.add(entrarBtn);
+
+        entrarBtn.addActionListener(e -> {
+            int usuario = Integer.parseInt(idField.getText());
+            String senha = new String(senhaField.getPassword()); // JPasswordField devolve char[], não String
+
+            FuncionarioDAO dao = new FuncionarioDAO();
+            Funcionario funcionario = dao.buscarPorId(usuario); // Aqui você pode ajustar para buscar pelo nome de usuário se necessário
+
+            if (funcionario != null && funcionario.getSenha().equals(senha)) {
+                JOptionPane.showMessageDialog(this, "Login realizado com sucesso!");
+                // aqui depois entra a navegação pra tela principal do sistema
+            } else {
+                JOptionPane.showMessageDialog(this, "Usuário ou senha inválidos.");
+            }
+        });
 
         return card;
     }
@@ -197,10 +214,42 @@ public class Login extends JPanel {
 
         RoundedButton finalizarBtn = new RoundedButton("FINALIZAR");
         finalizarBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        finalizarBtn.addActionListener(e ->
-                JOptionPane.showMessageDialog(this, "Cadastro solicitado para: " + userField.getText()));
         card.add(finalizarBtn);
 
+        finalizarBtn.addActionListener(e -> {
+            String usuario = userField.getText();
+            String senha = new String(senhaField.getPassword());
+            String confirmacao = new String(confirmSenhaField.getPassword());
+            String senhaAdmin = new String(adminField.getPassword());
+
+            if (!senha.equals(confirmacao)) {
+                JOptionPane.showMessageDialog(this, "As senhas não coincidem.");
+                confirmSenhaField.setText("");
+                senhaField.setText("");
+                return;
+            }
+
+            if (!senhaAdmin.equals("1234")) {
+                JOptionPane.showMessageDialog(this, "Senha de administrador incorreta.");
+                adminField.setText("");
+                return;
+            }
+
+            FuncionarioDAO dao = new FuncionarioDAO();
+            Funcionario funcionario = dao.buscarPorNomeUsuario(usuario);
+            if (funcionario != null && funcionario.getNome_usuario().equals(usuario)) {
+                JOptionPane.showMessageDialog(this, "Esse nome de usuário já existe.");
+                userField.setText("");
+                senhaField.setText("");
+                confirmSenhaField.setText("");
+                adminField.setText("");
+                return;
+            }
+
+            dao.inserir(new Funcionario(usuario, senha));
+            JOptionPane.showMessageDialog(this, "Funcionário cadastrado com sucesso!");
+        });
+        
         return card;
     }
 
