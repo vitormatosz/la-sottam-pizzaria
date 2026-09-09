@@ -17,12 +17,17 @@ public class Main {
             CardLayout cardLayout = new CardLayout();
             JPanel mainPanel = new JPanel(cardLayout);
 
-            // Instancia o LoginPanel (Tela Inicial) e define a ação para ir para o Registro
+            // Instancia a tela de Clientes
+            ClientesView clientesView = new ClientesView(() -> {
+                cardLayout.show(mainPanel, "TELA_INICIAL");
+            });
+
+            // Instancia o LoginPanel
             LoginPanel loginPanel = new LoginPanel(e -> {
                 cardLayout.show(mainPanel, "TELA_REGISTRO");
             });
 
-            // Instancia a tela Login passando a ação para VOLTAR para a TELA_INICIAL
+            // Instancia a tela Login
             Login telaRegistro = new Login(() -> {
                 cardLayout.show(mainPanel, "TELA_INICIAL");
             });
@@ -30,9 +35,10 @@ public class Main {
             // Adiciona as telas ao container
             mainPanel.add(loginPanel, "TELA_INICIAL");
             mainPanel.add(telaRegistro, "TELA_REGISTRO");
+            mainPanel.add(clientesView, "TELA_CLIENTES");
 
-            // Exibe a tela inicial primeiro
-            cardLayout.show(mainPanel, "TELA_INICIAL");
+            // EXIBE A TELA DE CLIENTES DIRETO AO INICIAR PARA TESTES
+            cardLayout.show(mainPanel, "TELA_CLIENTES");
 
             frame.add(mainPanel);
             frame.setVisible(true);
