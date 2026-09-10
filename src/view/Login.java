@@ -24,13 +24,11 @@ public class Login extends JPanel {
     private static final Color WHITE = Color.WHITE;
 
     private Runnable onVoltarAction;
+    private Runnable onLoginSucesso;
 
-    public Login() {
-        this(null);
-    }
-
-    public Login(Runnable onVoltarAction) {
+    public Login(Runnable onVoltarAction, Runnable onLoginSucesso) {
         this.onVoltarAction = onVoltarAction;
+        this.onLoginSucesso = onLoginSucesso;
 
         setLayout(new BorderLayout());
         setBackground(BG_LIGHT_BLUE);
@@ -87,19 +85,14 @@ public class Login extends JPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                // Desenha o fundo circular
                 g2.setColor(GREEN_ACCENT);
                 g2.fillOval(0, 0, getWidth(), getHeight());
-
-                // Desenha o texto centralizado
                 g2.setColor(WHITE);
                 g2.setFont(getFont());
                 FontMetrics fm = g2.getFontMetrics();
                 int x = (getWidth() - fm.stringWidth(getText())) / 2;
                 int y = ((getHeight() - fm.getHeight()) / 2) + fm.getAscent();
                 g2.drawString(getText(), x, y);
-
                 g2.dispose();
             }
         };
@@ -122,11 +115,9 @@ public class Login extends JPanel {
         gbc.anchor = GridBagConstraints.NORTH;
         gbc.insets = new Insets(10, 20, 10, 20);
 
-        // Card 1: ENTRAR
         gbc.gridx = 0;
         body.add(buildLoginCard(), gbc);
 
-        // Card 2: CADASTRO
         gbc.gridx = 1;
         body.add(buildRegisterCard(), gbc);
 
@@ -145,8 +136,8 @@ public class Login extends JPanel {
 
         card.add(fieldLabel("ID DO USUÁRIO*"));
         card.add(Box.createVerticalStrut(6));
-        RoundedTextField idField = new RoundedTextField(20);
-        card.add(idField);
+        RoundedTextField nameField = new RoundedTextField(20);
+        card.add(nameField);
         card.add(Box.createVerticalStrut(20));
 
         card.add(fieldLabel("SENHA*"));
@@ -157,24 +148,28 @@ public class Login extends JPanel {
 
         RoundedButton entrarBtn = new RoundedButton("ENTRAR");
         entrarBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        entrarBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, "Login: " + idField.getText()));
-        card.add(entrarBtn);
-
         entrarBtn.addActionListener(e -> {
-            int usuario = Integer.parseInt(idField.getText());
-            String senha = new String(senhaField.getPassword()); // JPasswordField devolve char[], não String
+            String usuario = nameField.getText();
+            String senha = new String(senhaField.getPassword());
 
             FuncionarioDAO dao = new FuncionarioDAO();
-            Funcionario funcionario = dao.buscarPorId(usuario); // Aqui você pode ajustar para buscar pelo nome de usuário se necessário
+            Funcionario funcionario = dao.buscarPorNomeUsuario(usuario);
 
-            if (funcionario != null && funcionario.getSenha().equals(senha)) {
-                JOptionPane.showMessageDialog(this, "Login realizado com sucesso!");
-                // aqui depois entra a navegação pra tela principal do sistema
-            } else {
-                JOptionPane.showMessageDialog(this, "Usuário ou senha inválidos.");
+            if (funcionario == null) {
+                JOptionPane.showMessageDialog(this, "Usuário não encontrado.");
+                senhaField.setText("");
+            } else if (!funcionario.getSenha().equals(senha)) {
+                JOptionPane.showMessageDialog(this, "Senha incorreta.");
+                senhaField.setText("");
+            } else if (funcionario.getNomeUsuario().equals(usuario) && funcionario.getSenha().equals(senha)) {
+                if (onLoginSucesso != null) {
+                    onLoginSucesso.run();
+                }
+                nameField.setText("");
+                senhaField.setText("");
             }
         });
-
+        card.add(entrarBtn);
         return card;
     }
 
@@ -229,7 +224,7 @@ public class Login extends JPanel {
                 return;
             }
 
-            if (!senhaAdmin.equals("1234")) {
+            if (!senhaAdmin.equals("LaSottamPizzaria")) {
                 JOptionPane.showMessageDialog(this, "Senha de administrador incorreta.");
                 adminField.setText("");
                 return;
@@ -237,7 +232,7 @@ public class Login extends JPanel {
 
             FuncionarioDAO dao = new FuncionarioDAO();
             Funcionario funcionario = dao.buscarPorNomeUsuario(usuario);
-            if (funcionario != null && funcionario.getNome_usuario().equals(usuario)) {
+            if (funcionario != null) {
                 JOptionPane.showMessageDialog(this, "Esse nome de usuário já existe.");
                 userField.setText("");
                 senhaField.setText("");
@@ -248,8 +243,12 @@ public class Login extends JPanel {
 
             dao.inserir(new Funcionario(usuario, senha));
             JOptionPane.showMessageDialog(this, "Funcionário cadastrado com sucesso!");
+            userField.setText("");
+            senhaField.setText("");
+            confirmSenhaField.setText("");
+            adminField.setText("");
         });
-        
+
         return card;
     }
 
@@ -269,7 +268,7 @@ public class Login extends JPanel {
         return label;
     }
 
-    // ---------- Componentes customizados ----------
+    // ---------- Componentes customizados (sem mudança nenhuma) ----------
 
     static class RoundedPanel extends JPanel {
         private final int radius;
@@ -346,9 +345,7 @@ public class Login extends JPanel {
             setBorder(new EmptyBorder(8, 20, 8, 20));
             setMaximumSize(new Dimension(180, 40));
             setCursor(new Cursor(Cursor.HAND_CURSOR));
-
             currentBg = GREEN_BTN;
-
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {

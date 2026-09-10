@@ -89,7 +89,7 @@ public class ClientesView extends JPanel {
         URL logoUrl = getClass().getResource("/assets/logo.png");
         if (logoUrl != null) {
             ImageIcon logoIcon = new ImageIcon(logoUrl);
-            Image logoScaled = logoIcon.getImage().getScaledInstance(280, 55, Image.SCALE_SMOOTH);
+            Image logoScaled = logoIcon.getImage().getScaledInstance(350, 70, Image.SCALE_SMOOTH);
             JLabel lblLogo = new JLabel(new ImageIcon(logoScaled));
             right.add(lblLogo);
         }

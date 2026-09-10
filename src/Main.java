@@ -1,47 +1,52 @@
-import java.awt.CardLayout;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import view.*;
+import javax.swing.*;
+
+import util.Navegador;
+
+import java.awt.*;
+
+import view.Inicial;
+import view.Login;
+import view.MenuPrincipal;
+import view.ClientesView;
 
 public class Main {
     public static void main(String[] args) {
-
-        SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("La Sottam Pizzaria");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            frame.setLocationRelativeTo(null);
 
-            // Gerenciador de navegação por telas
             CardLayout cardLayout = new CardLayout();
-            JPanel mainPanel = new JPanel(cardLayout);
+            JPanel painelPrincipal = new JPanel(cardLayout);
+            
+            // Gerenciador simplificado
+            Navegador navegador = new Navegador(cardLayout, painelPrincipal);
 
-            // Instancia a tela de Clientes
-            ClientesView clientesView = new ClientesView(() -> {
-                cardLayout.show(mainPanel, "TELA_INICIAL");
+            // Telas desacopladas recebendo apenas comandos de ação
+            Inicial telaInicial = new Inicial(e -> navegador.irPara("login"));
+            
+            Login telaLogin = new Login(
+                () -> navegador.irPara("inicial"), // Ação do botão voltar
+                () -> navegador.irPara("menu")     // Ação de sucesso no login
+            );
+
+            MenuPrincipal telaMenu = new MenuPrincipal(opcao -> {
+                if ("SAIR".equals(opcao)) {
+                    navegador.irPara("login");
+                } else if(opcao.equals("CLIENTES")) {
+                    navegador.irPara("clientes");
+                }
             });
 
-            // Instancia o LoginPanel
-            LoginPanel loginPanel = new LoginPanel(e -> {
-                cardLayout.show(mainPanel, "TELA_REGISTRO");
-            });
+            ClientesView telaClientes = new ClientesView(() -> navegador.irPara("menu"));
 
-            // Instancia a tela Login
-            Login telaRegistro = new Login(() -> {
-                cardLayout.show(mainPanel, "TELA_INICIAL");
-            });
+            painelPrincipal.add(telaInicial, "inicial");
+            painelPrincipal.add(telaLogin, "login");
+            painelPrincipal.add(telaMenu, "menu");
+            painelPrincipal.add(telaClientes, "clientes");
 
-            // Adiciona as telas ao container
-            mainPanel.add(loginPanel, "TELA_INICIAL");
-            mainPanel.add(telaRegistro, "TELA_REGISTRO");
-            mainPanel.add(clientesView, "TELA_CLIENTES");
+            frame.setContentPane(painelPrincipal);
+            navegador.irPara("inicial");
 
-            // EXIBE A TELA DE CLIENTES DIRETO AO INICIAR PARA TESTES
-            cardLayout.show(mainPanel, "TELA_CLIENTES");
-
-            frame.add(mainPanel);
             frame.setVisible(true);
-        });
     }
 }

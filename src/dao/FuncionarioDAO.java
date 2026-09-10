@@ -11,7 +11,7 @@ public class FuncionarioDAO {
         String sql = "INSERT INTO funcionario (nome_usuario, senha) VALUES (?, ?)";
         try (Connection conn = ConnectionFactory.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, funcionario.getNome_usuario());
+            stmt.setString(1, funcionario.getNomeUsuario());
             stmt.setString(2, funcionario.getSenha());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -78,7 +78,7 @@ public class FuncionarioDAO {
         String sql = "UPDATE funcionario SET nome_usuario = ?, senha = ? WHERE id = ?";
         try (Connection conn = ConnectionFactory.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, funcionario.getNome_usuario());
+            stmt.setString(1, funcionario.getNomeUsuario());
             stmt.setString(2, funcionario.getSenha());
             stmt.setInt(3, funcionario.getId());
             stmt.executeUpdate();
