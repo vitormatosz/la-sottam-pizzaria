@@ -134,7 +134,7 @@ public class Login extends JPanel {
         card.add(sectionTitle("ENTRAR"));
         card.add(Box.createVerticalStrut(25));
 
-        card.add(fieldLabel("ID DO USUÁRIO*"));
+        card.add(fieldLabel("NOME DE USUÁRIO*"));
         card.add(Box.createVerticalStrut(6));
         RoundedTextField nameField = new RoundedTextField(20);
         card.add(nameField);
