@@ -29,6 +29,7 @@ public class FuncionarioDAO {
                     Funcionario func = new Funcionario(
                             rs.getString("nome_usuario"),
                             rs.getString("senha"));
+                        func.setId(rs.getInt("id"));
                     return func;
                 }
             }
@@ -66,6 +67,7 @@ public class FuncionarioDAO {
                 Funcionario func = new Funcionario(
                         rs.getString("nome_usuario"),
                         rs.getString("senha"));
+                func.setId(rs.getInt("id"));
                 funcionario.add(func);
             }
         } catch (SQLException e) {

@@ -8,6 +8,7 @@ import view.Inicial;
 import view.Login;
 import view.MenuPrincipal;
 import view.ClientesView;
+import view.FuncionarioView;
 
 public class Main {
     public static void main(String[] args) {
@@ -34,15 +35,19 @@ public class Main {
                     navegador.irPara("login");
                 } else if(opcao.equals("CLIENTES")) {
                     navegador.irPara("clientes");
+                } else if (opcao.equals("FUNCIONÁRIOS")) {
+                    navegador.irPara("funcionarios");
                 }
             });
 
             ClientesView telaClientes = new ClientesView(() -> navegador.irPara("menu"));
+            FuncionarioView telaFuncionarios = new FuncionarioView(() -> navegador.irPara("menu"));
 
             painelPrincipal.add(telaInicial, "inicial");
             painelPrincipal.add(telaLogin, "login");
             painelPrincipal.add(telaMenu, "menu");
             painelPrincipal.add(telaClientes, "clientes");
+            painelPrincipal.add(telaFuncionarios, "funcionarios");
 
             frame.setContentPane(painelPrincipal);
             navegador.irPara("inicial");
