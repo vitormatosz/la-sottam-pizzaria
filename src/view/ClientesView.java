@@ -137,33 +137,35 @@ public class ClientesView extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 10, 5, 10);
 
-        // Lado Esquerdo: Tabela
+        // Lado Esquerdo: Tabela (ocupa todo o espaço dinâmico)
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 0.55;
+        gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         body.add(buildTablePanel(), gbc);
 
         // Lado Direito: Formulário e Busca
         gbc.gridx = 1;
-        gbc.weightx = 0.45;
+        gbc.weightx = 0.0;
+        gbc.weighty = 1.0;
 
         JPanel rightPanel = new JPanel(new GridBagLayout());
         rightPanel.setOpaque(false);
 
         GridBagConstraints gbcRight = new GridBagConstraints();
         gbcRight.gridx = 0;
-        gbcRight.fill = GridBagConstraints.BOTH;
+        gbcRight.fill = GridBagConstraints.HORIZONTAL;
+        gbcRight.anchor = GridBagConstraints.NORTH;
         gbcRight.insets = new Insets(0, 0, 15, 0);
 
         // Formulário
         gbcRight.gridy = 0;
-        gbcRight.weighty = 0.65;
+        gbcRight.weighty = 0.0;
         rightPanel.add(buildFormCard(), gbcRight);
 
         // Busca
         gbcRight.gridy = 1;
-        gbcRight.weighty = 0.35;
+        gbcRight.weighty = 1.0;
         gbcRight.insets = new Insets(0, 0, 0, 0);
         rightPanel.add(buildSearchCard(), gbcRight);
 
@@ -224,31 +226,37 @@ public class ClientesView extends JPanel {
     // ---------- Card de Cadastro / Edição ----------
     private RoundedPanel buildFormCard() {
         RoundedPanel card = new RoundedPanel(25, PURPLE_CARD);
+        
+        // Ajuste de dimensões do Card de Formulário (Largura x Altura)
+        Dimension formSize = new Dimension(360, 350);
+        card.setPreferredSize(formSize);
+        card.setMaximumSize(formSize);
+
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBorder(new EmptyBorder(20, 25, 20, 25));
+        card.setBorder(new EmptyBorder(15, 20, 15, 20));
 
         card.add(sectionTitle("CADASTRAR / EDITAR"));
-        card.add(Box.createVerticalStrut(12));
+        card.add(Box.createVerticalStrut(10));
 
         card.add(fieldLabel("NOME"));
-        card.add(Box.createVerticalStrut(4));
+        card.add(Box.createVerticalStrut(2));
         nomeField = new RoundedTextField(20);
         card.add(nomeField);
-        card.add(Box.createVerticalStrut(10));
+        card.add(Box.createVerticalStrut(8));
 
         card.add(fieldLabel("TELEFONE"));
-        card.add(Box.createVerticalStrut(4));
+        card.add(Box.createVerticalStrut(2));
         telefoneField = new RoundedTextField(20);
         card.add(telefoneField);
-        card.add(Box.createVerticalStrut(10));
+        card.add(Box.createVerticalStrut(8));
 
         card.add(fieldLabel("ENDEREÇO"));
-        card.add(Box.createVerticalStrut(4));
+        card.add(Box.createVerticalStrut(2));
         enderecoField = new RoundedTextField(20);
         card.add(enderecoField);
-        card.add(Box.createVerticalStrut(15));
+        card.add(Box.createVerticalStrut(12));
 
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
         btnPanel.setOpaque(false);
         btnPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -272,12 +280,18 @@ public class ClientesView extends JPanel {
     // ---------- Card de Busca ----------
     private RoundedPanel buildSearchCard() {
         RoundedPanel card = new RoundedPanel(25, PURPLE_CARD);
+        
+        // Ajuste de dimensões do Card de Busca (Largura x Altura)
+        Dimension searchSize = new Dimension(360, 110);
+        card.setPreferredSize(searchSize);
+        card.setMaximumSize(searchSize);
+
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBorder(new EmptyBorder(15, 25, 15, 25));
+        card.setBorder(new EmptyBorder(12, 20, 12, 20));
 
         JLabel title = sectionTitle("PESQUISAR CLIENTES");
         card.add(title);
-        card.add(Box.createVerticalStrut(10));
+        card.add(Box.createVerticalStrut(8));
 
         buscaField = new RoundedTextField(20);
         buscaField.setToolTipText("Digite o nome ou telefone");
@@ -301,7 +315,6 @@ public class ClientesView extends JPanel {
         List<Cliente> lista = dao.listarTodos();
 
         for (Cliente c : lista) {
-            // Aplicar filtro local caso o usuário esteja digitando na barra de pesquisa
             if (filtro != null && !filtro.isEmpty()) {
                 String f = filtro.toLowerCase();
                 boolean bateuNome = c.getNome() != null && c.getNome().toLowerCase().contains(f);
@@ -315,7 +328,7 @@ public class ClientesView extends JPanel {
             tableModel.addRow(new Object[]{
                 c.getId(),
                 c.getNome(),
-                c.getNumeroTel(), // Método getNumeroTel do seu model
+                c.getNumeroTel(),
                 c.getEndereco()
             });
         }
@@ -335,13 +348,11 @@ public class ClientesView extends JPanel {
         Cliente cliente = new Cliente(nome, telefone, endereco);
 
         if (idClienteSelecionado == null) {
-            // Inserir Novo
             dao.inserir(cliente);
             JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!");
         } else {
-            // Alterar Existente
             cliente.setId(idClienteSelecionado);
-            dao.alterar(cliente); // Método alterar() do seu ClienteDAO
+            dao.alterar(cliente);
             JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
         }
 
