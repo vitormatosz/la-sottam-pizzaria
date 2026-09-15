@@ -23,7 +23,7 @@ public class Main {
             Navegador navegador = new Navegador(cardLayout, painelPrincipal);
 
             // Telas desacopladas recebendo apenas comandos de ação
-            Inicial telaInicial = new Inicial(e -> navegador.irPara("login"));
+            Inicial telaInicial = new Inicial(e -> navegador.irPara("menu"));
             
             Login telaLogin = new Login(
                 () -> navegador.irPara("inicial"), // Ação do botão voltar

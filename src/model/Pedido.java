@@ -25,6 +25,7 @@ public class Pedido {
     }
 
     public int getId() { return id; }
+    public void setId(int id) {this.id = id;}
 
     public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
@@ -33,6 +34,7 @@ public class Pedido {
     public void setFormaPag(String formaPag) {this.formaPag = formaPag; }
 
     public double getFrete() { return frete; }
+    public void setFrete(double frete) { this.frete = frete; }
 
     public String getObservacao() { return observacao; }
     public void setObservacao(String observacao) {this.observacao = observacao; }
@@ -47,7 +49,6 @@ public class Pedido {
     public void setItens(List<ItemPedido> itens) { this.itens = itens; }
 
     public void adicionarItem(ItemPedido item) {itens.add(item);}
-
     public void removerItem(ItemPedido item) {itens.remove(item);}
 }
 

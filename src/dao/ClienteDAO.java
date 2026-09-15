@@ -21,12 +21,32 @@ public class ClienteDAO {
         }
     }
 
-    public Cliente buscarPorIdOuNome(int id, String nome) {
-        String sql = "SELECT * FROM cliente WHERE id = ? OR nome LIKE ?";
+    public Cliente buscarPorId(int id) {
+        String sql = "SELECT * FROM cliente WHERE id = ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Cliente c = new Cliente(
+                            rs.getString("nome"),
+                            rs.getString("numero_tel"),
+                            rs.getString("endereco"));
+                    c.setId(rs.getInt("id"));
+                    return c;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar cliente por ID: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public Cliente buscarPorNome(String nome) {
+        String sql = "SELECT * FROM cliente WHERE nome LIKE ?";
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            stmt.setString(2, "%" + nome + "%");
+            stmt.setString(1, "%" + nome + "%");
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Cliente c = new Cliente(rs.getString("nome"), rs.getString("numero_tel"), rs.getString("endereco"));
@@ -35,7 +55,7 @@ public class ClienteDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar cliente: " + e.getMessage());
+            throw new RuntimeException("Erro ao buscar cliente pelo nome: " + e.getMessage());
         }
         return null;
     }
