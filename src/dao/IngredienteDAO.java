@@ -21,12 +21,11 @@ public class IngredienteDAO {
         }
     }
 
-    public Ingrediente buscarPorIdOuNome(int id, String nome) {
-        String sql = "SELECT * FROM ingrediente WHERE id = ? OR nome LIKE ?";
+    public Ingrediente buscarPorId(int id) {
+        String sql = "SELECT * FROM ingrediente WHERE id = ?";
         try (Connection conn = ConnectionFactory.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            stmt.setString(2, "%" + nome + "%");
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Ingrediente ing = new Ingrediente(
@@ -40,7 +39,30 @@ public class IngredienteDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar ingrediente: " + e.getMessage());
+            throw new RuntimeException("Erro ao buscar ingrediente por ID: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public Ingrediente buscarPorIdOuNome(String nome) {
+        String sql = "SELECT * FROM ingrediente WHERE nome LIKE ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + nome + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Ingrediente ing = new Ingrediente(
+                            rs.getString("nome"),
+                            rs.getString("categoria"),
+                            rs.getString("unidade"),
+                            rs.getDouble("quantidade"),
+                            rs.getDouble("estoque_minimo"));
+                    ing.setId(rs.getInt("id"));
+                    return ing;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar ingrediente por nome: " + e.getMessage());
         }
         return null;
     }

@@ -8,6 +8,7 @@ import view.Inicial;
 import view.Login;
 import view.MenuPrincipal;
 import view.ClientesView;
+import view.EstoqueView;
 import view.FuncionarioView;
 
 public class Main {
@@ -23,7 +24,7 @@ public class Main {
             Navegador navegador = new Navegador(cardLayout, painelPrincipal);
 
             // Telas desacopladas recebendo apenas comandos de ação
-            Inicial telaInicial = new Inicial(e -> navegador.irPara("menu"));
+            Inicial telaInicial = new Inicial(e -> navegador.irPara("login"));
             
             Login telaLogin = new Login(
                 () -> navegador.irPara("inicial"), // Ação do botão voltar
@@ -37,17 +38,21 @@ public class Main {
                     navegador.irPara("clientes");
                 } else if (opcao.equals("FUNCIONÁRIOS")) {
                     navegador.irPara("funcionarios");
+                } else if (opcao.equals("ESTOQUE")) {
+                    navegador.irPara("estoque");
                 }
             });
 
             ClientesView telaClientes = new ClientesView(() -> navegador.irPara("menu"));
             FuncionarioView telaFuncionarios = new FuncionarioView(() -> navegador.irPara("menu"));
+            EstoqueView telaEstoque = new EstoqueView(() -> navegador.irPara("estoque"));
 
             painelPrincipal.add(telaInicial, "inicial");
             painelPrincipal.add(telaLogin, "login");
             painelPrincipal.add(telaMenu, "menu");
             painelPrincipal.add(telaClientes, "clientes");
             painelPrincipal.add(telaFuncionarios, "funcionarios");
+            painelPrincipal.add(telaEstoque, "estoque");
 
             frame.setContentPane(painelPrincipal);
             navegador.irPara("inicial");

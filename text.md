@@ -1,4 +1,72 @@
-# 🍕 La Sottam Pizzaria
+# 
+TABELA RECEITAS QUE DIMINUI ESTOQUE DE ACORDO COM O PRODUTO E TAMANHO (SE RELACIONA COM TAMANHO, PRODUTO E ESTOQUE) +implementar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🍕 La Sottam Pizzaria
 
 ## Sistema de Gestão de Pedidos
 

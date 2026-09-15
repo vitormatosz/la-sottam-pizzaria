@@ -240,7 +240,7 @@ public class FuncionarioView extends JPanel {
                 "Digite a SENHA ADMIN para confirmar a exclusão:",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
-            if ("1234".equals(new String(password.getPassword()))) {
+            if ("LaSottamPizzaria".equals(new String(password.getPassword()))) {
                 new FuncionarioDAO().excluir(idFuncionarioSelecionado);
                 JOptionPane.showMessageDialog(this, "Funcionário excluído com sucesso!");
                 limparFormulario();

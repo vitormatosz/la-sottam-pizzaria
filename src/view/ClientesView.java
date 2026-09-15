@@ -377,7 +377,7 @@ public class ClientesView extends JPanel {
 
         if (ok == JOptionPane.OK_OPTION) {
             String senhaAdmin = new String(pf.getPassword());
-            if ("1234".equals(senhaAdmin)) {
+            if ("LaSottamPizzaria".equals(senhaAdmin)) {
                 ClienteDAO dao = new ClienteDAO();
                 dao.excluir(idClienteSelecionado);
                 JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso!");
