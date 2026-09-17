@@ -10,7 +10,7 @@ public class PedidoDAO {
 
     public void inserir(Pedido pedido) {
         String sqlPedido = "INSERT INTO pedido (cliente_id, forma_pag, frete, data_pedido, tipo_saida) VALUES (?, ?, ?, ?, ?)";
-        String sqlItem = "INSERT INTO item_pedido (pedido_id, produto_id, segundo_sabor,tamanho, quantidade, preco_unitario) VALUES (?, ?, ?, ?, ?)";
+        String sqlItem = "INSERT INTO item_pedido (pedido_id, produto_id, segundo_sabor_id,tamanho, quantidade, preco_unitario) VALUES (?, ?, ?, ?, ?)";
 
         Connection conn = null;
         try {
@@ -101,11 +101,16 @@ public class PedidoDAO {
                     while (rs.next()) {
                         Produto produto = produtoDAO.buscarPorId(rs.getInt("produto_id"));
                         Produto segundoSabor = null;
-                        if (rs.getInt("segundo_sabor") != 0) {
-                            segundoSabor = produtoDAO.buscarPorId(rs.getInt("segundo_sabor"));
+                        if (rs.getInt("segundo_sabor_id") != 0) {
+                            segundoSabor = produtoDAO.buscarPorId(rs.getInt("segundo_sabor_id"));
                         }
                         Tamanho tamanho = Tamanho.valueOf(rs.getString("tamanho"));
-                        ItemPedido item = new ItemPedido(produto, tamanho, rs.getInt("quantidade"));
+                        ItemPedido item;
+                        if (segundoSabor != null) {
+                            item = new ItemPedido(produto, segundoSabor, tamanho, rs.getInt("quantidade"));
+                        } else {
+                            item = new ItemPedido(produto, tamanho, rs.getInt("quantidade"));
+                        }
                         item.setId(rs.getInt("id"));
                         item.setPrecoUnitario(rs.getDouble("preco_unitario"));
                         pedido.adicionarItem(item);

@@ -84,7 +84,14 @@ itemDao.inserir(new ItemReceita(receitaId, mussarela, 250));
 ```
 
 
-
+public void darBaixaPorItem(Connection conn, ItemPedido item) throws SQLException {
+    if (item.isMeioAMeio()) {
+        darBaixaPorProduto(conn, item.getProduto(), item.getTamanho(), item.getQuantidade(), 0.5);
+        darBaixaPorProduto(conn, item.getSegundoSabor(), item.getTamanho(), item.getQuantidade(), 0.5);
+    } else {
+        darBaixaPorProduto(conn, item.getProduto(), item.getTamanho(), item.getQuantidade(), 1.0);
+    }
+}
 
 
 

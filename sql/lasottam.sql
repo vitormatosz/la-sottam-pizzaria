@@ -48,8 +48,10 @@ CREATE TABLE item_pedido (
     id INT AUTO_INCREMENT PRIMARY KEY,
     pedido_id INT NOT NULL,
     produto_id INT NOT NULL,
+    segundo_sabor_id INT NULL,
     quantidade INT NOT NULL,
     preco_unitario DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (pedido_id) REFERENCES pedido(id) ON DELETE CASCADE,
-    FOREIGN KEY (produto_id) REFERENCES produto(id)
+    FOREIGN KEY (produto_id) REFERENCES produto(id),
+    FOREIGN KEY (segundo_sabor_id) REFERENCES produto(id)
 );
