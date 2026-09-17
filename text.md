@@ -1,5 +1,53 @@
 # 
-TABELA RECEITAS QUE DIMINUI ESTOQUE DE ACORDO COM O PRODUTO E TAMANHO (SE RELACIONA COM TAMANHO, PRODUTO E ESTOQUE) +implementar
+TABELA RECEITAS QUE DIMINUI ESTOQUE DE ACORDO COM O PRODUTO E TAMANHO (SE RELACIONA COM TAMANHO, PRODUTO E ESTOQUE) +implementar:
+
+Modo 1 — só ItemReceita (sem cabeçalho)
+
+Tabela receita (dados de uma Pizza de Mussarela, tamanho GRANDE):
+
+id	produto_id	tamanho	ingrediente_id	quantidade_necessaria
+1	1 (Pizza Mussarela)	GRANDE	1 (Farinha)	300
+2	1 (Pizza Mussarela)	GRANDE	2 (Leite)	50
+3	1 (Pizza Mussarela)	GRANDE	3 (Molho de Tomate)	100
+4	1 (Pizza Mussarela)	GRANDE	4 (Mussarela)	250
+
+Repara que produto_id = 1 e tamanho = GRANDE se repetem em toda linha — são 4 linhas pra descrever uma receita só. Em código, cadastrar isso seria:
+
+java
+ReceitaDAO dao = new ReceitaDAO();
+dao.inserir(new ItemReceita(pizzaMussarela, Tamanho.GRANDE, farinha, 300));
+dao.inserir(new ItemReceita(pizzaMussarela, Tamanho.GRANDE, leite, 50));
+dao.inserir(new ItemReceita(pizzaMussarela, Tamanho.GRANDE, molhoDeTomate, 100));
+dao.inserir(new ItemReceita(pizzaMussarela, Tamanho.GRANDE, mussarela, 250));
+
+Modo 2 — com cabeçalho Receita + ItemReceita
+
+Tabela receita (o cabeçalho, uma linha só pra essa combinação):
+
+id	produto_id	tamanho
+1	1 (Pizza Mussarela)	GRANDE
+
+Tabela item_receita (os ingredientes, apontando pro cabeçalho):
+
+id	receita_id	ingrediente_id	quantidade_necessaria
+1	1	1 (Farinha)	300
+2	1	2 (Leite)	50
+3	1	3 (Molho de Tomate)	100
+4	1	4 (Mussarela)	250
+
+Em código, ficaria em duas etapas — primeiro cria o cabeçalho, depois os itens vinculados a ele:
+
+java
+Receita receita = new Receita(pizzaMussarela, Tamanho.GRANDE);
+receitaDAO.inserir(receita);   // banco gera o id (ex: 1)
+
+ItemReceitaDAO itemDao = new ItemReceitaDAO();
+itemDao.inserir(new ItemReceita(receita, farinha, 300));
+itemDao.inserir(new ItemReceita(receita, leite, 50));
+itemDao.inserir(new ItemReceita(receita, molhoDeTomate, 100));
+itemDao.inserir(new ItemReceita(receita, mussarela, 250));
+
+Pra buscar os ingredientes: 2 consultas (ou um JOIN só, que dá na mesma) — primeiro acha a receita pelo produto+tamanho, depois busca os item_receita daquela receita_id.
 
 
 
