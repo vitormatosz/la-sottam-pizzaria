@@ -6,7 +6,7 @@ import java.util.List;
 import connection.ConnectionFactory;
 import model.Produto;
 
-public class ProdutoDAo {
+public class ProdutoDAO {
     public void inserir(Produto produto) {
         String sql = "INSERT INTO produto (nome, categoria, descricao, preco, disponivel) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = ConnectionFactory.getConnection();
@@ -21,19 +21,34 @@ public class ProdutoDAo {
         }
     }
 
-    public Produto buscarPorIdOuNome(int id, String nome) {
-    String sql = "SELECT * FROM produto WHERE id = ? OR nome LIKE ?";
+    public Produto buscarPorId(int id) {
+    String sql = "SELECT * FROM produto WHERE id = ?";
     try (Connection conn = ConnectionFactory.getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
         stmt.setInt(1, id);
-        stmt.setString(2, "%" + nome + "%");
         try (ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
                 return montarProduto(rs);
             }
         }
     } catch (SQLException e) {
-        throw new RuntimeException("Erro ao buscar produto: " + e.getMessage());
+        throw new RuntimeException("Erro ao buscar produto por id: " + e.getMessage());
+    }
+    return null;
+}
+
+    public Produto buscarPorNome(String nome) {
+    String sql = "SELECT * FROM produto WHERE nome LIKE ?";
+    try (Connection conn = ConnectionFactory.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, "%" + nome + "%");
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return montarProduto(rs);
+            }
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException("Erro ao buscar produto por nome: " + e.getMessage());
     }
     return null;
 }

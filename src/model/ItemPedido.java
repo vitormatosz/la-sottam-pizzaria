@@ -4,6 +4,7 @@ public class ItemPedido {
     private int id;
     private Pedido pedido;
     private Produto produto;
+    private Produto segundoSabor;
     private Tamanho tamanho;
     private int quantidade;
     private double precoUnitario;
@@ -15,6 +16,15 @@ public class ItemPedido {
         this.precoUnitario = produto.getPreco() + tamanho.getAcrescimo();
     }
 
+    public ItemPedido(Produto sabor1, Produto sabor2, Tamanho tamanho, int quantidade) {
+        this.produto = sabor1;
+        this.segundoSabor = sabor2;
+        this.tamanho = tamanho;
+        this.quantidade = quantidade;
+        double precoProduto = (sabor1.getPreco() + sabor2.getPreco()) / 2;
+        this.precoUnitario = precoProduto + tamanho.getAcrescimo();
+    }
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -23,6 +33,10 @@ public class ItemPedido {
 
     public Produto getProduto() { return produto; }
     public void setProduto(Produto produto) { this.produto = produto; }
+
+    public boolean isMeioAMeio() { return segundoSabor != null; }
+    public Produto getSegundoSabor() { return segundoSabor; }
+    public void setSegundoSabor(Produto segundoSabor) { this.segundoSabor = segundoSabor; }
 
     public Tamanho getTamanho() { return tamanho; }
     public void setTamanho(Tamanho tamanho) { this.tamanho = tamanho; }

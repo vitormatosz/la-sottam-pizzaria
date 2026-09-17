@@ -10,14 +10,13 @@ public class PedidoDAO {
 
     public void inserir(Pedido pedido) {
         String sqlPedido = "INSERT INTO pedido (cliente_id, forma_pag, frete, data_pedido, tipo_saida) VALUES (?, ?, ?, ?, ?)";
-        String sqlItem = "INSERT INTO item_pedido (pedido_id, produto_id, tamanho, quantidade, preco_unitario) VALUES (?, ?, ?, ?, ?)";
+        String sqlItem = "INSERT INTO item_pedido (pedido_id, produto_id, segundo_sabor,tamanho, quantidade, preco_unitario) VALUES (?, ?, ?, ?, ?)";
 
         Connection conn = null;
         try {
             conn = ConnectionFactory.getConnection();
-            conn.setAutoCommit(false); // inicia a transação: nada é salvo de verdade até o commit()
+            conn.setAutoCommit(false); 
 
-            // 1. insere o pedido e recupera o id gerado pelo banco
             int pedidoId;
             try (PreparedStatement stmt = conn.prepareStatement(sqlPedido, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, pedido.getCliente().getId());
@@ -34,20 +33,24 @@ public class PedidoDAO {
             }
             pedido.setId(pedidoId);
 
-            // 2. insere cada item, usando o id do pedido que acabou de ser gerado
             try (PreparedStatement stmt = conn.prepareStatement(sqlItem)) {
                 for (ItemPedido item : pedido.getItens()) {
                     stmt.setInt(1, pedidoId);
                     stmt.setInt(2, item.getProduto().getId());
-                    stmt.setString(3, item.getTamanho().name());
-                    stmt.setInt(4, item.getQuantidade());
-                    stmt.setDouble(5, item.getPrecoUnitario());
-                    stmt.addBatch(); // acumula os inserts pra rodar todos de uma vez
+                    if (item.isMeioAMeio()) {
+                        stmt.setInt(3, item.getSegundoSabor().getId());
+                    } else {
+                        stmt.setNull(3, java.sql.Types.INTEGER);
+                    }
+                    stmt.setString(4, item.getTamanho().name());
+                    stmt.setInt(5, item.getQuantidade());
+                    stmt.setDouble(6, item.getPrecoUnitario());
+                    stmt.addBatch(); 
                 }
                 stmt.executeBatch();
             }
 
-            conn.commit(); // só aqui os dados ficam de fato salvos no banco
+            conn.commit();
         } catch (SQLException e) {
             if (conn != null) {
                 try {
@@ -97,6 +100,10 @@ public class PedidoDAO {
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
                         Produto produto = produtoDAO.buscarPorId(rs.getInt("produto_id"));
+                        Produto segundoSabor = null;
+                        if (rs.getInt("segundo_sabor") != 0) {
+                            segundoSabor = produtoDAO.buscarPorId(rs.getInt("segundo_sabor"));
+                        }
                         Tamanho tamanho = Tamanho.valueOf(rs.getString("tamanho"));
                         ItemPedido item = new ItemPedido(produto, tamanho, rs.getInt("quantidade"));
                         item.setId(rs.getInt("id"));
