@@ -1,54 +1,87 @@
 # 
-TABELA RECEITAS QUE DIMINUI ESTOQUE DE ACORDO COM O PRODUTO E TAMANHO (SE RELACIONA COM TAMANHO, PRODUTO E ESTOQUE) +implementar:
+---
 
-Modo 1 — só ItemReceita (sem cabeçalho)
+## Modo 1 — Só `ItemReceita` (Sem Cabeçalho)
 
-Tabela receita (dados de uma Pizza de Mussarela, tamanho GRANDE):
+Neste modelo flat/simplificado, toda a granularidade da receita (produto, tamanho e ingrediente necessário) reside diretamente na mesma tabela, chamada `receita` (ou `item_receita` sem tabela pai de cabeçalho).
 
-id	produto_id	tamanho	ingrediente_id	quantidade_necessaria
-1	1 (Pizza Mussarela)	GRANDE	1 (Farinha)	300
-2	1 (Pizza Mussarela)	GRANDE	2 (Leite)	50
-3	1 (Pizza Mussarela)	GRANDE	3 (Molho de Tomate)	100
-4	1 (Pizza Mussarela)	GRANDE	4 (Mussarela)	250
+### Exemplo de Dados na Tabela `receita`
 
-Repara que produto_id = 1 e tamanho = GRANDE se repetem em toda linha — são 4 linhas pra descrever uma receita só. Em código, cadastrar isso seria:
+*(Exemplo: **Pizza de Mussarela — Tamanho GRANDE**)*
 
-java
+| id | produto_id | tamanho | ingrediente_id | quantidade_necessaria | unidade |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 1 (Pizza Mussarela) | `GRANDE` | 1 (Farinha) | 300 | g |
+| 2 | 1 (Pizza Mussarela) | `GRANDE` | 2 (Leite) | 50 | ml |
+| 3 | 1 (Pizza Mussarela) | `GRANDE` | 3 (Molho de Tomate) | 100 | g |
+| 4 | 1 (Pizza Mussarela) | `GRANDE` | 4 (Mussarela) | 250 | g |
+
+> **Observação de Normalização**: Os campos `produto_id = 1` e `tamanho = GRANDE` sofrem **duplicação horizontal/vertical**, exigindo 4 linhas distintas para descrever a mesma receita de uma pizza grande.
+
+---
+
+### Exemplo de Cadastro em Java (DAO)
+
+```java
 ReceitaDAO dao = new ReceitaDAO();
+
+// Repetição de parâmetros fixos (produto/tamanho) a cada chamada
 dao.inserir(new ItemReceita(pizzaMussarela, Tamanho.GRANDE, farinha, 300));
 dao.inserir(new ItemReceita(pizzaMussarela, Tamanho.GRANDE, leite, 50));
 dao.inserir(new ItemReceita(pizzaMussarela, Tamanho.GRANDE, molhoDeTomate, 100));
 dao.inserir(new ItemReceita(pizzaMussarela, Tamanho.GRANDE, mussarela, 250));
 
-Modo 2 — com cabeçalho Receita + ItemReceita
+```
 
-Tabela receita (o cabeçalho, uma linha só pra essa combinação):
+---
 
-id	produto_id	tamanho
-1	1 (Pizza Mussarela)	GRANDE
+### Avaliação do Modo 1
 
-Tabela item_receita (os ingredientes, apontando pro cabeçalho):
+| Prós (+) | Contras (−) |
+| --- | --- |
+| • Simplicidade inicial de DDL (apenas 1 tabela).<br>
 
-id	receita_id	ingrediente_id	quantidade_necessaria
-1	1	1 (Farinha)	300
-2	1	2 (Leite)	50
-3	1	3 (Molho de Tomate)	100
-4	1	4 (Mussarela)	250
+<br>• Consultas de baixa de estoque diretas (`SELECT ingrediente_id, quantidade_necessaria WHERE produto_id = ? AND tamanho = ?`). | • **Redundância de dados**: repetição massiva de `produto_id` e `tamanho`.<br>
 
-Em código, ficaria em duas etapas — primeiro cria o cabeçalho, depois os itens vinculados a ele:
+<br>• **Anomalias de atualização**: alterar o tamanho padrão ou renomear exige update em N linhas.<br>
 
-java
-Receita receita = new Receita(pizzaMussarela, Tamanho.GRANDE);
-receitaDAO.inserir(receita);   // banco gera o id (ex: 1)
+<br>• Falta de uma entidade "Receita" real (metadata da receita, rendimento global, instruções de preparo, tempo de forno). |
 
-ItemReceitaDAO itemDao = new ItemReceitaDAO();
-itemDao.inserir(new ItemReceita(receita, farinha, 300));
-itemDao.inserir(new ItemReceita(receita, leite, 50));
-itemDao.inserir(new ItemReceita(receita, molhoDeTomate, 100));
-itemDao.inserir(new ItemReceita(receita, mussarela, 250));
+---
 
-Pra buscar os ingredientes: 2 consultas (ou um JOIN só, que dá na mesma) — primeiro acha a receita pelo produto+tamanho, depois busca os item_receita daquela receita_id.
+## Comparativo / Alternativa: Modo 2 (Cabeçalho + Itens)
 
+Se o sistema crescer ou precisar gerenciar metadados da receita (ex: tempo de preparo, observações, rendimento), o padrão ideal separa a **definição da receita** dos **itens da receita**:
+
+### 1. Tabela `receita` (Cabeçalho)
+
+| id | produto_id | tamanho | descricao / instrucao | ativo |
+| --- | --- | --- | --- | --- |
+| 1 | 1 (Pizza Mussarela) | `GRANDE` | Abrir massa, molho, queijo e forno 300°C | `true` |
+
+### 2. Tabela `item_receita` (Detalhes)
+
+| id | receita_id | ingrediente_id | quantidade_necessaria |
+| --- | --- | --- | --- |
+| 1 | 1 | 1 (Farinha) | 300 |
+| 2 | 1 | 2 (Leite) | 50 |
+| 3 | 1 | 3 (Molho de Tomate) | 100 |
+| 4 | 1 | 4 (Mussarela) | 250 |
+
+### Vantagem no Java (Builder / Agregação)
+
+```java
+// O cabeçalho é persistido 1 única vez, gerando o ID da receita
+ReceitaCabecalho cabecalho = new ReceitaCabecalho(pizzaMussarela, Tamanho.GRANDE, "Preparo padrão");
+long receitaId = cabecalhoDAO.inserir(cabecalho);
+
+// Os itens apontam para o ID pai
+itemDao.inserir(new ItemReceita(receitaId, farinha, 300));
+itemDao.inserir(new ItemReceita(receitaId, leite, 50));
+itemDao.inserir(new ItemReceita(receitaId, molhoDeTomate, 100));
+itemDao.inserir(new ItemReceita(receitaId, mussarela, 250));
+
+```
 
 
 
