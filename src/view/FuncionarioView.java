@@ -1,3 +1,5 @@
+package view;
+
 import dao.FuncionarioDAO;
 import java.awt.*;
 import java.awt.event.KeyAdapter;

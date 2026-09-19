@@ -16,6 +16,7 @@ public class ProdutoDAO {
             stmt.setString(3, produto.getDescricao());
             stmt.setDouble(4, produto.getPreco());
             stmt.setBoolean(5, produto.isDisponivel());
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir produto: " + e.getMessage());
         }

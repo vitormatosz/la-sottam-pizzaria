@@ -7,6 +7,7 @@ import java.awt.*;
 import view.Inicial;
 import view.Login;
 import view.MenuPrincipal;
+import view.CardapioView;
 import view.ClientesView;
 import view.EstoqueView;
 import view.FuncionarioView;
@@ -39,13 +40,16 @@ public class Main {
                 } else if (opcao.equals("FUNCIONÁRIOS")) {
                     navegador.irPara("funcionarios");
                 } else if (opcao.equals("ESTOQUE")) {
-                    navegador.irPara("estoque");
+                navegador.irPara("estoque");
+                } else if (opcao.equals("CARDÁPIO")) {
+                navegador.irPara("cardapio");
                 }
             });
 
             ClientesView telaClientes = new ClientesView(() -> navegador.irPara("menu"));
             FuncionarioView telaFuncionarios = new FuncionarioView(() -> navegador.irPara("menu"));
-            EstoqueView telaEstoque = new EstoqueView(() -> navegador.irPara("estoque"));
+            EstoqueView telaEstoque = new EstoqueView(() -> navegador.irPara("menu"));
+            CardapioView telaCardapio = new CardapioView(() -> navegador.irPara("menu"));
 
             painelPrincipal.add(telaInicial, "inicial");
             painelPrincipal.add(telaLogin, "login");
@@ -53,6 +57,7 @@ public class Main {
             painelPrincipal.add(telaClientes, "clientes");
             painelPrincipal.add(telaFuncionarios, "funcionarios");
             painelPrincipal.add(telaEstoque, "estoque");
+            painelPrincipal.add(telaCardapio, "cardapio");
 
             frame.setContentPane(painelPrincipal);
             navegador.irPara("inicial");
