@@ -10,7 +10,7 @@ public class ProdutoDAO {
     public void inserir(Produto produto) {
         String sql = "INSERT INTO produto (nome, categoria, descricao, preco, disponivel) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, produto.getNome());
             stmt.setString(2, produto.getCategoria());
             stmt.setString(3, produto.getDescricao());
@@ -22,43 +22,43 @@ public class ProdutoDAO {
     }
 
     public Produto buscarPorId(int id) {
-    String sql = "SELECT * FROM produto WHERE id = ?";
-    try (Connection conn = ConnectionFactory.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, id);
-        try (ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                return montarProduto(rs);
+        String sql = "SELECT * FROM produto WHERE id = ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return montarProduto(rs);
+                }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar produto por id: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        throw new RuntimeException("Erro ao buscar produto por id: " + e.getMessage());
+        return null;
     }
-    return null;
-}
 
     public Produto buscarPorNome(String nome) {
-    String sql = "SELECT * FROM produto WHERE nome LIKE ?";
-    try (Connection conn = ConnectionFactory.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setString(1, "%" + nome + "%");
-        try (ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                return montarProduto(rs);
+        String sql = "SELECT * FROM produto WHERE nome LIKE ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + nome + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return montarProduto(rs);
+                }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar produto por nome: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        throw new RuntimeException("Erro ao buscar produto por nome: " + e.getMessage());
+        return null;
     }
-    return null;
-}
 
     public List<Produto> listarTodos() {
         List<Produto> produtos = new ArrayList<>();
         String sql = "SELECT * FROM produto";
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Produto p = montarProduto(rs);
                 produtos.add(p);
@@ -72,7 +72,7 @@ public class ProdutoDAO {
     public void alterar(Produto produto) {
         String sql = "UPDATE produto SET nome = ?, categoria = ?, descricao = ?, preco = ?, disponivel = ? WHERE id = ?";
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, produto.getNome());
             stmt.setString(2, produto.getCategoria());
             stmt.setString(3, produto.getDescricao());
@@ -88,7 +88,7 @@ public class ProdutoDAO {
     public void excluir(int id) {
         String sql = "DELETE FROM produto WHERE id = ?";
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -98,10 +98,10 @@ public class ProdutoDAO {
 
     private Produto montarProduto(ResultSet rs) throws SQLException {
         Produto p = new Produto(
-        rs.getString("nome"),
-        rs.getString("categoria"), 
-        rs.getString("descricao"), 
-        rs.getDouble("preco"));
+                rs.getString("nome"),
+                rs.getString("categoria"),
+                rs.getString("descricao"),
+                rs.getDouble("preco"));
         p.setId(rs.getInt("id"));
         p.setDisponivel(rs.getBoolean("disponivel"));
         return p;

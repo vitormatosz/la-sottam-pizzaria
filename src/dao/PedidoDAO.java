@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import connection.ConnectionFactory;
 import model.*;
-import service.EstoqueService;
 
 public class PedidoDAO {
 
@@ -53,9 +52,7 @@ public class PedidoDAO {
                 }
                 stmt.executeBatch();
             }
-
-            // dá baixa no estoque de cada item, na MESMA conexão/transação —
-            // se algum ingrediente ficar negativo, o rollback desfaz pedido + itens + qualquer baixa parcial
+            
             for (ItemPedido item : pedido.getItens()) {
                 estoqueService.darBaixaPorItem(conn, item);
             }

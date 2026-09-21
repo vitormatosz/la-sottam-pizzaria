@@ -24,17 +24,6 @@ public class ReceitaDAO {
         }
     }
 
-    // usada pela tela de cadastro de receitas (produto já carregado, então não busca de novo)
-    public List<ItemReceita> listarPorProdutoETamanho(int produtoId, Tamanho tamanho) {
-        try (Connection conn = ConnectionFactory.getConnection()) {
-            return listarPorProdutoETamanho(conn, produtoId, tamanho);
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar receita: " + e.getMessage());
-        }
-    }
-
-    // NOVO: versão que recebe a conexão de fora — usada pelo EstoqueService dentro
-    // da MESMA transação do pedido, igual fizemos no IngredienteDAO.alterar(Connection, ...)
     public List<ItemReceita> listarPorProdutoETamanho(Connection conn, int produtoId, Tamanho tamanho) throws SQLException {
         List<ItemReceita> resultado = new ArrayList<>();
         String sql = "SELECT r.id, r.quantidade_necessaria, "
@@ -54,8 +43,6 @@ public class ReceitaDAO {
                             rs.getDouble("estoque_minimo"));
                     ingrediente.setId(rs.getInt("ingrediente_id"));
 
-                    // produto fica null de propósito: pra dar baixa de estoque só
-                    // precisamos do ingrediente e da quantidade, não do produto inteiro de novo
                     ItemReceita item = new ItemReceita(null, tamanho, ingrediente, rs.getDouble("quantidade_necessaria"));
                     item.setId(rs.getInt("id"));
                     resultado.add(item);
