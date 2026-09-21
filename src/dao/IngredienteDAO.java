@@ -16,6 +16,7 @@ public class IngredienteDAO {
             stmt.setString(3, ingrediente.getUnidade());
             stmt.setDouble(4, ingrediente.getQuantidade());
             stmt.setDouble(5, ingrediente.getEstoqueMinimo());
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir ingrediente: " + e.getMessage());
         }
@@ -102,6 +103,21 @@ public class IngredienteDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao alterar ingrediente: " + e.getMessage());
+        }
+    }
+
+    // NOVO: versão que recebe a conexão de fora, usada pelo EstoqueService
+    // dentro da mesma transação do pedido
+    public void alterar(Connection conn, Ingrediente ingrediente) throws SQLException {
+        String sql = "UPDATE ingrediente SET nome = ?, categoria = ?, unidade = ?, quantidade = ?, estoque_minimo = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, ingrediente.getNome());
+            stmt.setString(2, ingrediente.getCategoria());
+            stmt.setString(3, ingrediente.getUnidade());
+            stmt.setDouble(4, ingrediente.getQuantidade());
+            stmt.setDouble(5, ingrediente.getEstoqueMinimo());
+            stmt.setInt(6, ingrediente.getId());
+            stmt.executeUpdate();
         }
     }
 

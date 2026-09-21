@@ -73,27 +73,46 @@ public class ConnectionFactory {
                     )
                     """);
 
+            // NOVO: tabela receita — liga produto + tamanho a um ingrediente e quanto ele consome
+            statement.executeUpdate("""
+                    CREATE TABLE IF NOT EXISTS receita (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        produto_id INT NOT NULL,
+                        tamanho ENUM('PEQUENA','MEDIA','GRANDE') NOT NULL,
+                        ingrediente_id INT NOT NULL,
+                        quantidade_necessaria DECIMAL(10, 2) NOT NULL,
+                        FOREIGN KEY (produto_id) REFERENCES produto(id),
+                        FOREIGN KEY (ingrediente_id) REFERENCES ingrediente(id),
+                        UNIQUE (produto_id, tamanho, ingrediente_id)
+                    )
+                    """);
+
             statement.executeUpdate("""
                     CREATE TABLE IF NOT EXISTS pedido (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         cliente_id INT NOT NULL,
                         forma_pag VARCHAR(50),
                         frete DECIMAL(10, 2) DEFAULT 0.00,
+                        observacao TEXT,
                         data_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
-                        tipo_saida ENUM('entrega', 'retirada') NOT NULL,
+                        tipo_saida ENUM('ENTREGA', 'RETIRADA') NOT NULL,
                         FOREIGN KEY (cliente_id) REFERENCES cliente(id)
                     )
                     """);
 
+            // item_pedido agora com tamanho e segundo_sabor_id (NULL se não for meio a meio)
             statement.executeUpdate("""
                     CREATE TABLE IF NOT EXISTS item_pedido (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         pedido_id INT NOT NULL,
                         produto_id INT NOT NULL,
+                        segundo_sabor_id INT NULL,
+                        tamanho ENUM('PEQUENA','MEDIA','GRANDE') NOT NULL,
                         quantidade INT NOT NULL,
                         preco_unitario DECIMAL(10, 2) NOT NULL,
                         FOREIGN KEY (pedido_id) REFERENCES pedido(id) ON DELETE CASCADE,
-                        FOREIGN KEY (produto_id) REFERENCES produto(id)
+                        FOREIGN KEY (produto_id) REFERENCES produto(id),
+                        FOREIGN KEY (segundo_sabor_id) REFERENCES produto(id)
                     )
                     """);
         }

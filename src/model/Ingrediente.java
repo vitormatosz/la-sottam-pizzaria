@@ -16,37 +16,31 @@ public class Ingrediente {
         this.estoqueMinimo = estoqueMinimo;
     }
 
-    public int getId() {
-        return id;}
+    public int getId() {return id;}
 
-    public void setId(int id) {
-        this.id = id;}
+    public void setId(int id) {this.id = id;}
 
-    public String getNome() {
-        return nome;}
-    public void setNome(String nome) {
-        this.nome = nome; }
+    public String getNome() {return nome;}
+    public void setNome(String nome) {this.nome = nome; }
 
-    public String getCategoria() {
-        return categoria;}
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;}
+    public String getCategoria() {return categoria;}
+    public void setCategoria(String categoria) {this.categoria = categoria;}
 
-    public String getUnidade() {
-        return unidade;}
-    public void setUnidade(String unidade) {
-        this.unidade = unidade;}
+    public String getUnidade() {return unidade;}
+    public void setUnidade(String unidade) {this.unidade = unidade;}
 
-    public double getQuantidade() {
-        return quantidade;}
-    public void setQuantidade(double quantidade) {
-        this.quantidade = quantidade;}
+    public double getQuantidade() {return quantidade;}
+    public void setQuantidade(double quantidade) {this.quantidade = quantidade;}
     
-    public double getEstoqueMinimo() {
-         return estoqueMinimo;}
-    public void setEstoqueMinimo(double estoqueMinimo) {
-         this.estoqueMinimo = estoqueMinimo;}
+    public double getEstoqueMinimo() {return estoqueMinimo;}
+    public void setEstoqueMinimo(double estoqueMinimo) {this.estoqueMinimo = estoqueMinimo;}
 
-    public boolean precisaReposicao() {
-        return quantidade <= estoqueMinimo;}
+    public boolean precisaReposicao() {return quantidade <= estoqueMinimo;}
+
+    public void darBaixa(double qtd) {
+    if (quantidade - qtd < 0) {
+        throw new IllegalArgumentException("Estoque não pode ficar negativo");
+    }
+    quantidade -= qtd;
+}
 }

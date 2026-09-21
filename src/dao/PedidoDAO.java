@@ -5,25 +5,29 @@ import java.util.ArrayList;
 import java.util.List;
 import connection.ConnectionFactory;
 import model.*;
+import service.EstoqueService;
 
 public class PedidoDAO {
 
+    private final EstoqueService estoqueService = new EstoqueService();
+
     public void inserir(Pedido pedido) {
-        String sqlPedido = "INSERT INTO pedido (cliente_id, forma_pag, frete, data_pedido, tipo_saida) VALUES (?, ?, ?, ?, ?)";
-        String sqlItem = "INSERT INTO item_pedido (pedido_id, produto_id, segundo_sabor_id,tamanho, quantidade, preco_unitario) VALUES (?, ?, ?, ?, ?)";
+        String sqlPedido = "INSERT INTO pedido (cliente_id, forma_pag, frete, observacao, data_pedido, tipo_saida) VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlItem = "INSERT INTO item_pedido (pedido_id, produto_id, segundo_sabor_id, tamanho, quantidade, preco_unitario) VALUES (?, ?, ?, ?, ?, ?)";
 
         Connection conn = null;
         try {
             conn = ConnectionFactory.getConnection();
-            conn.setAutoCommit(false); 
+            conn.setAutoCommit(false);
 
             int pedidoId;
             try (PreparedStatement stmt = conn.prepareStatement(sqlPedido, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, pedido.getCliente().getId());
                 stmt.setString(2, pedido.getFormaPag());
                 stmt.setDouble(3, pedido.getFrete());
-                stmt.setTimestamp(4, new Timestamp(pedido.getDataPedido().getTime()));
-                stmt.setString(5, pedido.getTipoDeSaida().name());
+                stmt.setString(4, pedido.getObservacao());
+                stmt.setTimestamp(5, new Timestamp(pedido.getDataPedido().getTime()));
+                stmt.setString(6, pedido.getTipoDeSaida().name());
                 stmt.executeUpdate();
 
                 try (ResultSet keys = stmt.getGeneratedKeys()) {
@@ -45,13 +49,19 @@ public class PedidoDAO {
                     stmt.setString(4, item.getTamanho().name());
                     stmt.setInt(5, item.getQuantidade());
                     stmt.setDouble(6, item.getPrecoUnitario());
-                    stmt.addBatch(); 
+                    stmt.addBatch();
                 }
                 stmt.executeBatch();
             }
 
+            // dá baixa no estoque de cada item, na MESMA conexão/transação —
+            // se algum ingrediente ficar negativo, o rollback desfaz pedido + itens + qualquer baixa parcial
+            for (ItemPedido item : pedido.getItens()) {
+                estoqueService.darBaixaPorItem(conn, item);
+            }
+
             conn.commit();
-        } catch (SQLException e) {
+        } catch (SQLException | IllegalArgumentException e) {
             if (conn != null) {
                 try {
                     conn.rollback();
@@ -88,7 +98,8 @@ public class PedidoDAO {
                     Cliente cliente = clienteDAO.buscarPorId(rs.getInt("cliente_id"));
                     TipoSaida tipoSaida = TipoSaida.valueOf(rs.getString("tipo_saida"));
 
-                    pedido = new Pedido(cliente, rs.getString("forma_pag"), rs.getString("observacao"), rs.getDate("dataPedido"), tipoSaida);
+                    pedido = new Pedido(cliente, rs.getString("forma_pag"), rs.getString("observacao"),
+                            rs.getTimestamp("data_pedido"), tipoSaida);
                     pedido.setId(rs.getInt("id"));
                     pedido.setFrete(rs.getDouble("frete"));
                     pedido.setDataPedido(rs.getTimestamp("data_pedido"));
@@ -100,10 +111,13 @@ public class PedidoDAO {
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
                         Produto produto = produtoDAO.buscarPorId(rs.getInt("produto_id"));
+
                         Produto segundoSabor = null;
-                        if (rs.getInt("segundo_sabor_id") != 0) {
-                            segundoSabor = produtoDAO.buscarPorId(rs.getInt("segundo_sabor_id"));
+                        int segundoSaborId = rs.getInt("segundo_sabor_id");
+                        if (!rs.wasNull()) {
+                            segundoSabor = produtoDAO.buscarPorId(segundoSaborId);
                         }
+
                         Tamanho tamanho = Tamanho.valueOf(rs.getString("tamanho"));
                         ItemPedido item;
                         if (segundoSabor != null) {
