@@ -1,6 +1,12 @@
 # 
 ---
 
+Cardapio box disponibilidade
+receita tela
+Novo pedido detalhes, observacao na outra tela, aumentar botoes
+Estoque botar seta
+
+
 ## Modo 1 — Só `ItemReceita` (Sem Cabeçalho)
 
 Neste modelo flat/simplificado, toda a granularidade da receita (produto, tamanho e ingrediente necessário) reside diretamente na mesma tabela, chamada `receita` (ou `item_receita` sem tabela pai de cabeçalho).

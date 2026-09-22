@@ -39,9 +39,7 @@ public class ReceitaDAO {
 
         List<ItemReceita> resultado = new ArrayList<>();
 
-        String sql = "SELECT id, ingrediente_id, quantidade_necessaria " +
-                     "FROM receita " +
-                     "WHERE produto_id = ? AND tamanho = ?";
+        String sql = "SELECT id, ingrediente_id, quantidade_necessaria FROM receita WHERE produto_id = ? AND tamanho = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 

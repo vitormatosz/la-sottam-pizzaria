@@ -83,6 +83,7 @@ public class NovoPedidoView extends JPanel {
     private JLabel labelClienteSelecionado;
     private DefaultListModel<String> modeloResultadoClientes = new DefaultListModel<>();
     private JList<String> listaResultadoClientes;
+    private JScrollPane scrollClientes;
     private List<Cliente> resultadosClientes = new ArrayList<>();
 
     // ---------- Componentes: carrinho ----------
@@ -211,23 +212,35 @@ public class NovoPedidoView extends JPanel {
         body.setOpaque(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(5, 10, 5, 10);
-        gbc.weighty = 1.0;
+        gbc.insets = new Insets(0, 6, 0, 6);
 
-        // Coluna 1: catálogo de produtos (clicável, igual clientes)
+        // Coluna 1: catálogo de produtos
         gbc.gridx = 0;
+        gbc.gridy = 0;
         gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
         body.add(buildCatalogoPanel(), gbc);
+
+        // Espaço necessário para alinhar os cards com o início da tabela,
+        // e não com o título "PRODUTOS DISPONÍVEIS".
+        Insets alinhamentoTabela = new Insets(30, 6, 0, 6);
 
         // Coluna 2: formulário do item
         gbc.gridx = 1;
         gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = alinhamentoTabela;
         body.add(buildFormItemCard(), gbc);
 
-        // Coluna 3: carrinho / produtos do pedido
+        // Coluna 3: produtos do pedido
         gbc.gridx = 2;
-        gbc.weightx = 0.6;
+        gbc.weightx = 0.65;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = alinhamentoTabela;
         body.add(buildCarrinhoPanel(), gbc);
 
         return body;
@@ -322,93 +335,97 @@ public class NovoPedidoView extends JPanel {
 
     // ---------- Formulário do item (card roxo) ----------
     private RoundedPanel buildFormItemCard() {
-        RoundedPanel card = new RoundedPanel(25, PURPLE_CARD);
-        Dimension formSize = new Dimension(360, 560);
-        card.setPreferredSize(formSize);
-        card.setMaximumSize(formSize);
-
+        RoundedPanel card = new RoundedPanel(25, PURPLE_CARD) {
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                d.width = 360;
+                return d;
+            }
+        };
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBorder(new EmptyBorder(15, 20, 15, 20));
+        card.setBorder(new EmptyBorder(12, 18, 12, 18));
 
         JPanel tituloLinha = new JPanel(new BorderLayout());
         tituloLinha.setOpaque(false);
         tituloLinha.setAlignmentX(Component.LEFT_ALIGNMENT);
-        tituloLinha.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        tituloLinha.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
         tituloLinha.add(sectionTitle("PEDIDO"), BorderLayout.WEST);
 
         meioAMeioBtn = makeCircleButton("½");
         meioAMeioBtn.setToolTipText("Marcar como pizza meio a meio");
         meioAMeioBtn.addActionListener(e -> alternarMeioAMeio());
+
         JPanel infoWrap = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         infoWrap.setOpaque(false);
         infoWrap.add(meioAMeioBtn);
         tituloLinha.add(infoWrap, BorderLayout.EAST);
 
         card.add(tituloLinha);
-        card.add(Box.createVerticalStrut(10));
+        card.add(Box.createVerticalStrut(5));
 
         card.add(fieldLabel("SABOR 1"));
-        card.add(Box.createVerticalStrut(2));
         labelSabor1 = valorInfo("Clique em um produto ao lado");
         card.add(labelSabor1);
-        card.add(Box.createVerticalStrut(4));
+        card.add(Box.createVerticalStrut(3));
+
+        card.add(fieldLabel("VALOR DO PRODUTO"));
         campoValorProduto1 = new RoundedTextField(20);
         campoValorProduto1.setEditable(false);
-        campoValorProduto1.putClientProperty("placeholder", "VALOR DO PRODUTO");
-        card.add(fieldLabel("VALOR DO PRODUTO"));
-        card.add(Box.createVerticalStrut(2));
         card.add(campoValorProduto1);
-        card.add(Box.createVerticalStrut(8));
+        card.add(Box.createVerticalStrut(5));
 
         blocoSabor2 = new JPanel();
         blocoSabor2.setLayout(new BoxLayout(blocoSabor2, BoxLayout.Y_AXIS));
         blocoSabor2.setOpaque(false);
         blocoSabor2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        blocoSabor2.add(fieldLabel("SABOR 2 (meio a meio)"));
-        blocoSabor2.add(Box.createVerticalStrut(2));
+
+        blocoSabor2.add(fieldLabel("SABOR 2 (MEIO A MEIO)"));
         labelSabor2 = valorInfo("Clique em outro produto ao lado");
         blocoSabor2.add(labelSabor2);
-        blocoSabor2.add(Box.createVerticalStrut(4));
+        blocoSabor2.add(Box.createVerticalStrut(3));
+
+        blocoSabor2.add(fieldLabel("VALOR DO PRODUTO"));
         campoValorProduto2 = new RoundedTextField(20);
         campoValorProduto2.setEditable(false);
         blocoSabor2.add(campoValorProduto2);
-        blocoSabor2.add(Box.createVerticalStrut(8));
+        blocoSabor2.add(Box.createVerticalStrut(5));
+
         blocoSabor2.setVisible(false);
         card.add(blocoSabor2);
 
         card.add(fieldLabel("QUANTIDADE"));
-        card.add(Box.createVerticalStrut(2));
         campoQuantidade = new RoundedTextField(20);
         campoQuantidade.setText("1");
         card.add(campoQuantidade);
-        card.add(Box.createVerticalStrut(8));
+        card.add(Box.createVerticalStrut(5));
 
         card.add(fieldLabel("OBSERVAÇÕES"));
-        card.add(Box.createVerticalStrut(2));
         campoObservacoes = new RoundedTextField(20);
         card.add(campoObservacoes);
-        card.add(Box.createVerticalStrut(8));
+        card.add(Box.createVerticalStrut(5));
 
         card.add(fieldLabel("TAMANHO"));
-        card.add(Box.createVerticalStrut(4));
-        JPanel tamanhoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
+        JPanel tamanhoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         tamanhoPanel.setOpaque(false);
         tamanhoPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         btnPequena = new RoundedButton("P");
         btnMedia = new RoundedButton("M");
         btnGrande = new RoundedButton("G");
+
         btnPequena.addActionListener(e -> selecionarTamanho(Tamanho.PEQUENA));
         btnMedia.addActionListener(e -> selecionarTamanho(Tamanho.MEDIA));
         btnGrande.addActionListener(e -> selecionarTamanho(Tamanho.GRANDE));
+
         tamanhoPanel.add(btnPequena);
         tamanhoPanel.add(btnMedia);
         tamanhoPanel.add(btnGrande);
         card.add(tamanhoPanel);
         selecionarTamanho(Tamanho.MEDIA);
-        card.add(Box.createVerticalStrut(10));
+        card.add(Box.createVerticalStrut(6));
 
         card.add(fieldLabel("CLIENTE"));
-        card.add(Box.createVerticalStrut(2));
         campoBuscaCliente = new RoundedTextField(20);
         campoBuscaCliente.setToolTipText("Digite o nome do cliente");
         campoBuscaCliente.addKeyListener(new KeyAdapter() {
@@ -418,7 +435,7 @@ public class NovoPedidoView extends JPanel {
             }
         });
         card.add(campoBuscaCliente);
-        card.add(Box.createVerticalStrut(4));
+        card.add(Box.createVerticalStrut(3));
 
         listaResultadoClientes = new JList<>(modeloResultadoClientes);
         listaResultadoClientes.setFont(FonteUtil.carregarFonte(POPPINS, 13f));
@@ -432,21 +449,26 @@ public class NovoPedidoView extends JPanel {
                     labelClienteSelecionado.setText("Selecionado: " + clienteSelecionado.getNome());
                     modeloResultadoClientes.clear();
                     campoBuscaCliente.setText(clienteSelecionado.getNome());
+                    scrollClientes.setVisible(false);
+                    ajustarFormulario();
                 }
             }
         });
-        JScrollPane scrollClientes = new JScrollPane(listaResultadoClientes);
-        scrollClientes.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
+
+        scrollClientes = new JScrollPane(listaResultadoClientes);
         scrollClientes.setAlignmentX(Component.LEFT_ALIGNMENT);
+        scrollClientes.setPreferredSize(new Dimension(300, 70));
+        scrollClientes.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
+        scrollClientes.setVisible(false);
         card.add(scrollClientes);
-        card.add(Box.createVerticalStrut(4));
 
         labelClienteSelecionado = fieldLabel("Nenhum cliente selecionado");
         labelClienteSelecionado.setFont(FonteUtil.carregarFonte(POPPINS, 12f));
+        card.add(Box.createVerticalStrut(3));
         card.add(labelClienteSelecionado);
-        card.add(Box.createVerticalStrut(10));
+        card.add(Box.createVerticalStrut(6));
 
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         btnPanel.setOpaque(false);
         btnPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -460,7 +482,27 @@ public class NovoPedidoView extends JPanel {
         btnPanel.add(avancarBtn);
         card.add(btnPanel);
 
+        card.setMinimumSize(new Dimension(330, 0));
+
         return card;
+    }
+
+    private void ajustarFormulario() {
+        if (blocoSabor2 != null) {
+            blocoSabor2.revalidate();
+        }
+        if (scrollClientes != null) {
+            scrollClientes.revalidate();
+        }
+
+        revalidate();
+        repaint();
+
+        Container parent = getParent();
+        if (parent != null) {
+            parent.revalidate();
+            parent.repaint();
+        }
     }
 
     private JLabel valorInfo(String textoPadrao) {
@@ -479,8 +521,7 @@ public class NovoPedidoView extends JPanel {
         campoValorProduto2.setText("");
         meioAMeioBtn.setToolTipText(meioAMeioAtivo ? "Meio a meio ativado (clique para desativar)"
                 : "Marcar como pizza meio a meio");
-        revalidate();
-        repaint();
+        ajustarFormulario();
     }
 
     private void selecionarTamanho(Tamanho tamanho) {
@@ -494,6 +535,8 @@ public class NovoPedidoView extends JPanel {
         modeloResultadoClientes.clear();
         resultadosClientes.clear();
         if (filtro.isEmpty()) {
+            scrollClientes.setVisible(false);
+            ajustarFormulario();
             return;
         }
         List<Cliente> todos = clienteDAO.listarTodos();
@@ -504,6 +547,9 @@ public class NovoPedidoView extends JPanel {
                 modeloResultadoClientes.addElement(c.getNome() + " - " + c.getNumeroTel());
             }
         }
+
+        scrollClientes.setVisible(!resultadosClientes.isEmpty());
+        ajustarFormulario();
     }
 
     private void limparFormularioItem() {
@@ -519,8 +565,8 @@ public class NovoPedidoView extends JPanel {
         campoObservacoes.setText("");
         selecionarTamanho(Tamanho.MEDIA);
         tabelaProdutos.clearSelection();
-        revalidate();
-        repaint();
+        scrollClientes.setVisible(false);
+        ajustarFormulario();
     }
 
     private void adicionarItemAoCarrinho() {
@@ -640,7 +686,14 @@ public class NovoPedidoView extends JPanel {
         JPanel wrapper = new JPanel(new GridBagLayout());
         wrapper.setOpaque(false);
 
-        RoundedPanel card = new RoundedPanel(25, PURPLE_CARD);
+        RoundedPanel card = new RoundedPanel(25, PURPLE_CARD) {
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                d.width = 360;
+                return d;
+            }
+        };
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBorder(new EmptyBorder(20, 30, 20, 30));
         card.setPreferredSize(new Dimension(520, 560));
