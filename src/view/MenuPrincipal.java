@@ -74,6 +74,7 @@ public class MenuPrincipal extends JPanel {
         menu.add(menuTitulo("GESTÃO"));
 
         menu.add(menuButton("CARDÁPIO", PURPLE_TEXT, WHITE_TEXT, false));
+        menu.add(menuButton("RECEITAS", PURPLE_TEXT, WHITE_TEXT, false));
         menu.add(menuButton("ESTOQUE", PURPLE_TEXT, WHITE_TEXT, false));
         menu.add(menuButton("CLIENTES", PURPLE_TEXT, WHITE_TEXT, false));
         menu.add(menuButton("FUNCIONÁRIOS", PURPLE_TEXT, WHITE_TEXT, false));

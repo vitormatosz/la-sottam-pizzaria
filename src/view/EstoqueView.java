@@ -27,12 +27,12 @@ public class EstoqueView extends JPanel {
         private static final Color RED_BTN_HOVER = new Color(0x821C1C);
         private static final Color WHITE = Color.WHITE;
         private Runnable onVoltarAction;
+        
         // Componentes da interface
         private JTable tabelaEstoque;
         private DefaultTableModel tableModel;
         private RoundedTextField nomeField;
-        private static final String[] CATEGORIAS = { "Laticínios", "Carnes e frios", "Vegetais",
-                        "Massas e farinhas", "Molhos", "Bebidas", "Outros" };
+        private static final String[] CATEGORIAS = { "Laticínios", "Carnes e frios", "Vegetais", "Massas e farinhas", "Molhos", "Bebidas", "Outros" };
         private static final String[] UNIDADES = { "g", "kg", "ml", "L", "unidade" };
         private JComboBox<String> categoriaCombo;
         private JComboBox<String> unidadeCombo;
@@ -56,11 +56,7 @@ public class EstoqueView extends JPanel {
                 carregarDadosTabela(null);
         }
 
-        // =========================================================
-
         // CABEÇALHO
-
-        // =========================================================
         private JPanel buildHeader() {
                 JPanel header = new JPanel(new BorderLayout());
                 header.setOpaque(false);
@@ -119,11 +115,7 @@ public class EstoqueView extends JPanel {
                 return btn;
         }
 
-        // =========================================================
-
         // CORPO
-
-        // =========================================================
         private JPanel buildBody() {
                 JPanel body = new JPanel(new GridBagLayout());
                 body.setOpaque(false);
@@ -160,11 +152,8 @@ public class EstoqueView extends JPanel {
                 return body;
         }
 
-        // =========================================================
 
         // TABELA
-
-        // =========================================================
         private JPanel buildTablePanel() {
                 JPanel panel = new JPanel(new BorderLayout());
                 panel.setOpaque(false);
@@ -213,11 +202,8 @@ public class EstoqueView extends JPanel {
                 return panel;
         }
 
-        // =========================================================
 
         // FORMULÁRIO
-
-        // =========================================================
         private RoundedPanel buildFormCard() {
                 RoundedPanel card = new RoundedPanel(25, PURPLE_CARD);
                 Dimension formSize = new Dimension(360, 500);
@@ -277,11 +263,8 @@ public class EstoqueView extends JPanel {
                 return card;
         }
 
-        // =========================================================
 
         // BUSCA
-
-        // =========================================================
         private RoundedPanel buildSearchCard() {
                 RoundedPanel card = new RoundedPanel(25, PURPLE_CARD);
                 Dimension searchSize = new Dimension(360, 120);
@@ -307,8 +290,6 @@ public class EstoqueView extends JPanel {
         // =========================================================
 
         // BANCO DE DADOS
-
-        // =========================================================
         private void carregarDadosTabela(String filtro) {
                 tableModel.setRowCount(0);
                 IngredienteDAO dao = new IngredienteDAO();
@@ -335,11 +316,8 @@ public class EstoqueView extends JPanel {
                 }
         }
 
-        // =========================================================
 
         // SALVAR / EDITAR
-
-        // =========================================================
         private void salvarIngrediente() {
                 String nome = nomeField.getText().trim();
                 String categoria = (String) categoriaCombo.getSelectedItem();
@@ -382,11 +360,8 @@ public class EstoqueView extends JPanel {
                 carregarDadosTabela(null);
         }
 
-        // =========================================================
 
         // EXCLUIR
-
-        // =========================================================
         private void deletarIngredienteComAdmin() {
                 if (idEstoqueSelecionado == null) {
                         JOptionPane.showMessageDialog(this, "Selecione um ingrediente na tabela para excluir.",
@@ -417,11 +392,8 @@ public class EstoqueView extends JPanel {
                 }
         }
 
-        // =========================================================
 
         // LIMPAR
-
-        // =========================================================
         private void limparFormulario() {
                 idEstoqueSelecionado = null;
                 nomeField.setText("");
@@ -432,11 +404,8 @@ public class EstoqueView extends JPanel {
                 tabelaEstoque.clearSelection();
         }
 
-        // =========================================================
 
         // LABELS
-
-        // =========================================================
         private JLabel sectionTitle(String text) {
                 JLabel label = new JLabel(text);
                 label.setFont(FonteUtil.carregarFonte(AUDIOWIDE, 20f));
@@ -470,14 +439,11 @@ public class EstoqueView extends JPanel {
                                 return;
                         }
                 }
-                combo.setSelectedIndex(0); // valor antigo que não está na lista
+                combo.setSelectedIndex(0); 
         }
 
-        // =========================================================
 
         // PAINEL ARREDONDADO
-
-        // =========================================================
         static class RoundedPanel extends JPanel {
                 private final int radius;
                 private final Color bg;
@@ -499,11 +465,8 @@ public class EstoqueView extends JPanel {
                 }
         }
 
-        // =========================================================
 
         // CAMPO DE TEXTO ARREDONDADO
-
-        // =========================================================
         static class RoundedTextField extends JTextField {
                 RoundedTextField(int columns) {
                         super(columns);
@@ -525,11 +488,8 @@ public class EstoqueView extends JPanel {
                 }
         }
 
-        // =========================================================
 
         // BOTÃO ARREDONDADO
-
-        // =========================================================
         static class RoundedButton extends JButton {
                 private Color normalBg;
                 private Color hoverBg;

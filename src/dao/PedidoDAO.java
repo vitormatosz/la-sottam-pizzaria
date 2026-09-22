@@ -52,7 +52,7 @@ public class PedidoDAO {
                 }
                 stmt.executeBatch();
             }
-            
+
             for (ItemPedido item : pedido.getItens()) {
                 estoqueService.darBaixaPorItem(conn, item);
             }
@@ -63,7 +63,8 @@ public class PedidoDAO {
                 try {
                     conn.rollback();
                 } catch (SQLException ex) {
-                    /* ignora erro no rollback */ }
+                    System.err.println("Erro no rollback: " + ex.getMessage());
+                }
             }
             throw new RuntimeException("Erro ao inserir pedido: " + e.getMessage());
         } finally {
@@ -72,7 +73,8 @@ public class PedidoDAO {
                     conn.setAutoCommit(true);
                     conn.close();
                 } catch (SQLException ex) {
-                    /* ignora */ }
+                    System.err.println("Erro ao fechar conexão: " + ex.getMessage());
+                }
             }
         }
     }
