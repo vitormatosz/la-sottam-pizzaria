@@ -8,6 +8,45 @@ pedido
 +calcularSubtotalItens() double
 +calcularTotal() double
 
+
+ private JPanel buildBody() {
+                JPanel body = new JPanel(new GridBagLayout());
+                body.setOpaque(false);
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.fill = GridBagConstraints.BOTH;
+                gbc.insets = new Insets(5, 10, 5, 10);
+                // TABELA
+                gbc.gridx = 0; //coluna 0
+                gbc.gridy = 0; //linha 0
+                gbc.weightx = 1.0; //espaço horizontal
+                gbc.weighty = 1.0; //espaço vertical
+                body.add(buildTablePanel(), gbc);
+
+                // PAINEL DIREITO
+                gbc.gridx = 1; //coluna 1
+                gbc.weightx = 0.0; //espaço horizontal
+                gbc.weighty = 1.0; //espaço vertical
+                JPanel rightPanel = new JPanel(new GridBagLayout());
+                rightPanel.setOpaque(false);
+                GridBagConstraints gbcRight = new GridBagConstraints();
+                gbcRight.gridx = 0; //coluna 0
+                gbcRight.fill = GridBagConstraints.HORIZONTAL;
+                gbcRight.anchor = GridBagConstraints.NORTH;
+                gbcRight.insets = new Insets(0, 0, 15, 0);
+
+                // FORMULÁRIO
+                gbcRight.gridy = 0; //form coluna 0
+                gbcRight.weighty = 0.0; //form espaço vertical
+                rightPanel.add(buildFormCard(), gbcRight);
+                // BUSCA
+                gbcRight.gridy = 1; //busca coluna 0, linha 1
+                gbcRight.weighty = 1.0; //busca espaço vertical
+                gbcRight.insets = new Insets(0, 0, 0, 0);
+                rightPanel.add(buildSearchCard(), gbcRight);
+                body.add(rightPanel, gbc);
+                return body;
+        }
+
 package dao;
 
 import java.sql.*;
@@ -15,6 +54,8 @@ import java.util.ArrayList;
 import java.util.List;
 import connection.ConnectionFactory;
 import model.*;
+
+
 
 public class PedidoDAO {
 

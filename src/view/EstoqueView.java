@@ -102,6 +102,7 @@ public class EstoqueView extends JPanel {
                                 FontMetrics fm = g2.getFontMetrics();
                                 int x = (getWidth() - fm.stringWidth(getText())) / 2;
                                 int y = ((getHeight() - fm.getHeight()) / 2) + fm.getAscent();
+                                g2.setColor(WHITE);
                                 g2.drawString(getText(), x, y);
                                 g2.dispose();
                         }

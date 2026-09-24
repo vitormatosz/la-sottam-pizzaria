@@ -1,10 +1,14 @@
 # 
 ---
 
-Cardapio box disponibilidade
-receita tela
-Novo pedido detalhes, observacao na outra tela, aumentar botoes
-Estoque botar seta
+-- Cardapio box disponibilidade
+-- receita tela
+-- Novo pedido detalhes, observacao na outra tela, aumentar botoes
+-- Estoque botar seta
+
+-- Cards menu aparecer
+-- Tela Receita
+-- Lógica Receita
 
 
 ## Modo 1 — Só `ItemReceita` (Sem Cabeçalho)
