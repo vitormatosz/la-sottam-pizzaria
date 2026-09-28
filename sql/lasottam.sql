@@ -34,7 +34,7 @@ CREATE TABLE ingrediente (
     estoque_minimo DECIMAL(10, 2) NOT NULL
 );
 
-/*CREATE TABLE IF NOT EXISTS receita (
+CREATE TABLE IF NOT EXISTS receita (
     id INT AUTO_INCREMENT PRIMARY KEY,
     produto_id INT NOT NULL,
     tamanho ENUM('PEQUENA','MEDIA','GRANDE') NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE ingrediente (
     FOREIGN KEY (produto_id) REFERENCES produto(id),
     FOREIGN KEY (ingrediente_id) REFERENCES ingrediente(id),
     UNIQUE (produto_id, tamanho, ingrediente_id)
-)*/
+)
 
 CREATE TABLE IF NOT EXISTS pedido (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -68,3 +68,23 @@ CREATE TABLE IF NOT EXISTS item_pedido (
     FOREIGN KEY (produto_id) REFERENCES produto(id),
     FOREIGN KEY (segundo_sabor_id) REFERENCES produto(id)
 );
+
+INSERT INTO produto (nome, categoria, descricao, preco, disponivel) VALUES
+
+('Pizza Calabresa', 'Pizza', 'Pizza de calabresa, cebola e muçarela', 60.00, TRUE),
+('Pizza Mussarela', 'Pizza', 'Pizza de muçarela, tomate e orégano', 60.00, TRUE),
+('Pizza Frango com Catupiry', 'Pizza', 'Pizza de frango desfiado com catupiry', 60.00, TRUE),
+('Pizza Portuguesa', 'Pizza', 'Pizza com presunto, ovo, cebola, tomate e muçarela', 60.00, TRUE),
+('Pizza Quatro Queijos', 'Pizza', 'Pizza com muçarela, provolone, parmesão e catupiry', 60.00, TRUE),
+
+('Esfiha de Carne', 'Esfiha', 'Esfiha aberta recheada com carne temperada', 8.00, TRUE),
+('Esfiha de Queijo', 'Esfiha', 'Esfiha aberta recheada com muçarela', 8.00, TRUE),
+('Esfiha de Frango', 'Esfiha', 'Esfiha aberta recheada com frango desfiado', 8.00, TRUE),
+('Esfiha de Calabresa', 'Esfiha', 'Esfiha aberta recheada com calabresa e muçarela', 8.00, TRUE),
+('Esfiha de Peperoni', 'Esfiha', 'Esfiha recheada com peperoni', 8.00, TRUE),
+
+('Coca-Cola', 'Bebida', 'Coca-Cola 2 litros', 12.00, TRUE),
+('Guaraná Antarctica', 'Bebida', 'Guaraná Antarctica 2 litros', 12.00, TRUE),
+('Fanta Laranja', 'Bebida', 'Fanta Laranja 2 litros', 12.00, TRUE),
+('Sprite', 'Bebida', 'Sprite 2 litros', 12.00, TRUE),
+('Suco de Laranja', 'Bebida', 'Suco de laranja 1 litro', 12.00, TRUE);

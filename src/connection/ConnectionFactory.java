@@ -73,7 +73,6 @@ public class ConnectionFactory {
                     )
                     """);
 
-            // NOVO: tabela receita — liga produto + tamanho a um ingrediente e quanto ele consome
             statement.executeUpdate("""
                     CREATE TABLE IF NOT EXISTS receita (
                         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -100,7 +99,6 @@ public class ConnectionFactory {
                     )
                     """);
 
-            // item_pedido agora com tamanho e segundo_sabor_id (NULL se não for meio a meio)
             statement.executeUpdate("""
                     CREATE TABLE IF NOT EXISTS item_pedido (
                         id INT AUTO_INCREMENT PRIMARY KEY,
